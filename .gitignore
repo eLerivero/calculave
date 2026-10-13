@@ -1,6 +1,5 @@
 # Dependencias Node
 node_modules/
-package-lock.json
 
 # Entorno y Configuración Local
 .env
