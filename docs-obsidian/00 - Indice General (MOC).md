@@ -40,11 +40,13 @@ graph TD
     MOC --> E["05 - Estrategia de Caché Local y Modo Offline"]
     MOC --> F["06 - Manual de Usuario y Casos de Uso"]
     MOC --> G["07 - Soporte de Modo Oscuro y Modo Claro"]
+    MOC --> H["08 - Análisis y Fortalecimiento de Seguridad"]
 
     B --> E
     A --> C
     A --> D
     A --> G
+    C --> H
 ```
 
 ### 📑 Secciones Principales
@@ -85,6 +87,12 @@ graph TD
    * Variables CSS nativas y selector `data-theme`.
    * Inicialización Zero-FOUC (sin parpadeos).
    * Adaptación de partículas en Canvas y sincronización con barra de estado.
+
+8. [[08 - Analisis y Fortalecimiento de Seguridad|Análisis y Fortalecimiento de Seguridad]]
+   * Auditoría OWASP MASVS y endurecimiento (*hardening*).
+   * Política de Seguridad de Contenido (CSP) anti-XSS.
+   * `network_security_config.xml` y bloqueo de tráfico cleartext.
+   * Supresión de respaldos físicos (`allowBackup="false"`) y ofuscación R8/ProGuard.
 
 ---
 

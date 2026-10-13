@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Bloqueo absoluto de tráfico HTTP en texto claro en toda la aplicación -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <!-- Dominios oficiales de cotización con TLS/HTTPS estricto -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">dolarapi.com</domain>
+        <domain includeSubdomains="true">criptoya.com</domain>
+        <domain includeSubdomains="true">er-api.com</domain>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+</network-security-config>

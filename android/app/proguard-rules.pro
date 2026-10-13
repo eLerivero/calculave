@@ -19,3 +19,20 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# ==========================================
+# Reglas de Seguridad y Ofuscación CalculaVE
+# ==========================================
+
+# 1. Preservar plugins y puente Capacitor nativo
+-keep public class * extends com.getcapacitor.Plugin
+-keep public class com.getcapacitor.** { *; }
+
+# 2. Eliminar llamadas a Logcat en compilación de Producción
+-assumenosideeffects class android.util.Log {
+    public static boolean isLoggable(java.lang.String, int);
+    public static int v(...);
+    public static int d(...);
+    public static int i(...);
+}
+

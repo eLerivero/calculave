@@ -15,6 +15,9 @@
     <meta name="application-name" content="CalculaVE">
     <meta name="author" content="Luis David Rivero Carmona">
 
+    <!-- Política de Seguridad de Contenido Estricta (Anti-XSS & Anti-Exfiltración) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://ve.dolarapi.com https://criptoya.com https://open.er-api.com; object-src 'none'; base-uri 'self';">
+
     <!-- Inicialización Inmediata del Tema y Detección de Instalación (Sin parpadeo) -->
     <script>
         (function() {
@@ -1673,7 +1676,6 @@
                     });
                 }
             } catch (e) {
-                console.warn('Fallo primario ve.dolarapi dolares:', e);
                 // Intento respaldo para BCV desde open.er-api
                 try {
                     const resBackup = await fetchConTimeout('https://open.er-api.com/v6/latest/USD');
@@ -1699,9 +1701,7 @@
                         exitos++;
                     }
                 }
-            } catch (e) {
-                console.warn('Fallo ve.dolarapi euros:', e);
-            }
+            } catch (e) {}
 
             // 3. USDT Binance P2P desde criptoya.com
             try {
@@ -1714,9 +1714,7 @@
                         exitos++;
                     }
                 }
-            } catch (e) {
-                console.warn('Fallo criptoya usdt:', e);
-            }
+            } catch (e) {}
 
             syncBtn.classList.remove('loading');
             syncLabel.textContent = 'Sincronizar';
@@ -2256,9 +2254,7 @@
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(() => console.log('SW activo y caché offline lista'))
-                    .catch((err) => console.warn('SW no disponible:', err));
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
             });
         }
 
