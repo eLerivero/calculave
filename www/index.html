@@ -15,7 +15,7 @@
     <meta name="application-name" content="CalculaVE">
     <meta name="author" content="Luis David Rivero Carmona">
 
-    <!-- Inicialización Inmediata del Tema (Sin parpadeo) -->
+    <!-- Inicialización Inmediata del Tema y Detección de Instalación (Sin parpadeo) -->
     <script>
         (function() {
             try {
@@ -25,7 +25,21 @@
                 document.documentElement.setAttribute('data-theme', theme);
                 const metaTheme = document.querySelector('meta[name="theme-color"]');
                 if (metaTheme) {
-                    metaTheme.setAttribute('content', theme === 'light' ? '#f8fafc' : '#0a0e1a');
+                    metaTheme.setAttribute('content', theme === 'light' ? '#f1f5f9' : '#0a0e1a');
+                }
+                const isInstalled = window.matchMedia('(display-mode: standalone)').matches ||
+                                    window.matchMedia('(display-mode: fullscreen)').matches ||
+                                    window.matchMedia('(display-mode: minimal-ui)').matches ||
+                                    window.navigator.standalone === true ||
+                                    Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) ||
+                                    window.location.protocol === 'capacitor:' ||
+                                    window.location.protocol === 'file:' ||
+                                    window.location.protocol === 'ionic:' ||
+                                    document.referrer.includes('android-app://') ||
+                                    document.referrer.includes('capacitor://') ||
+                                    localStorage.getItem('calculave_installed') === 'true';
+                if (isInstalled) {
+                    document.documentElement.classList.add('app-is-installed');
                 }
             } catch(e) {}
         })();
@@ -40,64 +54,87 @@
 
     <style>
         :root {
+            /* Modo Oscuro: Sereno, equilibrado y descansado */
             --primary: #10b981;
             --primary-dark: #059669;
             --primary-light: #34d399;
+            --amount-bs: #34d399;
             --bg-base: #0a0e1a;
-            --bg-body-grad: radial-gradient(circle at 50% 0%, #172554 0%, #0a0e1a 60%, #020617 100%);
-            --calculator-bg: rgba(15, 23, 42, 0.82);
-            --surface: rgba(255, 255, 255, 0.04);
-            --surface-hover: rgba(255, 255, 255, 0.07);
-            --surface-active: rgba(255, 255, 255, 0.1);
+            --bg-body-grad: radial-gradient(circle at 50% 0%, #111c38 0%, #0a0e1a 60%, #030712 100%);
+            --calculator-bg: rgba(15, 23, 42, 0.85);
+            --surface: rgba(255, 255, 255, 0.045);
+            --surface-hover: rgba(255, 255, 255, 0.08);
+            --surface-active: rgba(255, 255, 255, 0.12);
             --surface-modal: #0f172a;
             --border: rgba(255, 255, 255, 0.09);
             --border-subtle: rgba(255, 255, 255, 0.04);
-            --border-focus: rgba(16, 185, 129, 0.5);
+            --border-focus: rgba(16, 185, 129, 0.45);
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
             --accent-amber: #f59e0b;
             --accent-blue: #38bdf8;
-            --accent-purple: #a855f7;
-            --rate-card-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(15, 23, 42, 0.45) 100%);
-            --results-bg: rgba(15, 23, 42, 0.6);
+            --accent-purple: #c084fc;
+            --rate-card-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.07) 0%, rgba(15, 23, 42, 0.5) 100%);
+            --results-bg: rgba(15, 23, 42, 0.65);
             --toast-bg: rgba(15, 23, 42, 0.95);
-            --tip-box-bg: rgba(56, 189, 248, 0.08);
+            --tip-box-bg: rgba(56, 189, 248, 0.07);
             --total-bs-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(5, 150, 105, 0.06));
-            --shadow-card: 0 20px 45px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
-            --shadow-btn: 0 8px 20px rgba(16, 185, 129, 0.35);
+            --banner-bg: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(16, 185, 129, 0.12));
+            --banner-border: rgba(56, 189, 248, 0.25);
+            --shadow-card: 0 20px 45px -10px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06);
+            --shadow-btn: 0 6px 18px rgba(16, 185, 129, 0.3);
             --radius-card: 26px;
             --radius-input: 14px;
-            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         [data-theme="light"] {
+            /* Modo Claro: Suave, sereno, equilibrado y sin deslumbramiento */
             --primary: #059669;
             --primary-dark: #047857;
             --primary-light: #10b981;
-            --bg-base: #f8fafc;
-            --bg-body-grad: radial-gradient(circle at 50% 0%, #e0f2fe 0%, #f1f5f9 55%, #e2e8f0 100%);
-            --calculator-bg: rgba(255, 255, 255, 0.92);
-            --surface: rgba(241, 245, 249, 0.85);
+            --amount-bs: #047857;
+            --bg-base: #f1f5f9;
+            --bg-body-grad: radial-gradient(circle at 50% 0%, #e2e8f0 0%, #f1f5f9 55%, #e2e8f0 100%);
+            --calculator-bg: rgba(255, 255, 255, 0.94);
+            --surface: rgba(241, 245, 249, 0.9);
             --surface-hover: rgba(226, 232, 240, 0.95);
             --surface-active: rgba(203, 213, 225, 0.9);
             --surface-modal: #ffffff;
-            --border: rgba(203, 213, 225, 0.85);
-            --border-subtle: rgba(226, 232, 240, 0.8);
-            --border-focus: rgba(5, 150, 105, 0.5);
+            --border: rgba(203, 213, 225, 0.75);
+            --border-subtle: rgba(226, 232, 240, 0.85);
+            --border-focus: rgba(5, 150, 105, 0.45);
             --text-primary: #0f172a;
             --text-secondary: #475569;
             --text-muted: #64748b;
-            --accent-amber: #d97706;
+            --accent-amber: #b45309;
             --accent-blue: #0284c7;
             --accent-purple: #7c3aed;
-            --rate-card-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(248, 250, 252, 0.9) 100%);
-            --results-bg: rgba(248, 250, 252, 0.9);
+            --rate-card-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.06) 0%, rgba(248, 250, 252, 0.95) 100%);
+            --results-bg: rgba(248, 250, 252, 0.95);
             --toast-bg: rgba(255, 255, 255, 0.98);
-            --tip-box-bg: rgba(56, 189, 248, 0.12);
-            --total-bs-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.08));
-            --shadow-card: 0 20px 45px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(203, 213, 225, 0.6);
-            --shadow-btn: 0 8px 20px rgba(5, 150, 105, 0.25);
+            --tip-box-bg: rgba(2, 132, 199, 0.06);
+            --total-bs-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(5, 150, 105, 0.05));
+            --banner-bg: linear-gradient(135deg, rgba(2, 132, 199, 0.07), rgba(16, 185, 129, 0.07));
+            --banner-border: rgba(2, 132, 199, 0.2);
+            --shadow-card: 0 16px 36px -10px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(226, 232, 240, 0.8);
+            --shadow-btn: 0 6px 16px rgba(5, 150, 105, 0.22);
+        }
+
+        /* Ocultar toda opción o banner de instalación si la app ya está instalada */
+        .app-is-installed #installBanner,
+        .app-is-installed .install-banner,
+        .app-is-installed .only-not-installed {
+            display: none !important;
+        }
+
+        .only-installed {
+            display: none;
+        }
+
+        .app-is-installed .only-installed {
+            display: block;
         }
 
         * {
@@ -242,7 +279,7 @@
             border-radius: 20px;
             font-size: 11px;
             font-weight: 700;
-            color: var(--primary-light);
+            color: var(--amount-bs);
         }
 
         .dot-pulse {
@@ -265,16 +302,23 @@
             display: none;
             align-items: center;
             justify-content: space-between;
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(16, 185, 129, 0.15));
-            border: 1px solid rgba(56, 189, 248, 0.3);
+            background: var(--banner-bg);
+            border: 1px solid var(--banner-border);
             border-radius: 14px;
             padding: 10px 14px;
             margin-bottom: 14px;
             animation: fadeIn 0.3s ease-out;
+            transition: all 0.25s ease;
         }
 
         .install-banner.show {
             display: flex;
+        }
+
+        .app-is-installed .install-banner,
+        .app-is-installed #installBanner,
+        .install-banner.installed-hidden {
+            display: none !important;
         }
 
         .install-info {
@@ -287,7 +331,7 @@
         }
 
         .install-btn {
-            background: linear-gradient(135deg, #0284c7, #0ea5e9);
+            background: linear-gradient(135deg, var(--accent-blue), #0284c7);
             color: #ffffff;
             border: none;
             padding: 6px 12px;
@@ -299,6 +343,7 @@
             align-items: center;
             gap: 4px;
             box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+            transition: var(--transition);
         }
 
         .btn-icon-tiny {
@@ -359,7 +404,7 @@
         .sync-btn {
             background: rgba(16, 185, 129, 0.15);
             border: 1px solid rgba(16, 185, 129, 0.3);
-            color: var(--primary-light);
+            color: var(--amount-bs);
             border-radius: 8px;
             padding: 4px 8px;
             font-size: 10px;
@@ -421,27 +466,27 @@
         }
 
         .source-pill.active {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.2));
-            color: #34d399;
+            background: rgba(16, 185, 129, 0.16);
+            color: var(--primary);
             border-color: rgba(16, 185, 129, 0.45);
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.12);
         }
 
         .source-pill.active.euro {
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(2, 132, 199, 0.2));
-            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.16);
+            color: var(--accent-blue);
             border-color: rgba(56, 189, 248, 0.45);
         }
 
         .source-pill.active.usdt {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.2));
-            color: #fbbf24;
+            background: rgba(245, 158, 11, 0.16);
+            color: var(--accent-amber);
             border-color: rgba(245, 158, 11, 0.45);
         }
 
         .source-pill.active.custom {
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(126, 34, 206, 0.2));
-            color: #c084fc;
+            background: rgba(168, 85, 247, 0.16);
+            color: var(--accent-purple);
             border-color: rgba(168, 85, 247, 0.45);
         }
 
@@ -467,9 +512,9 @@
             letter-spacing: 0.2px;
         }
 
-        .badge-usd { background: rgba(56, 189, 248, 0.16); color: var(--accent-blue); }
-        .badge-bs { background: rgba(16, 185, 129, 0.16); color: var(--primary-light); }
-        .badge-pct { background: rgba(245, 158, 11, 0.16); color: var(--accent-amber); }
+        .badge-usd { background: rgba(56, 189, 248, 0.14); color: var(--accent-blue); }
+        .badge-bs { background: rgba(16, 185, 129, 0.14); color: var(--amount-bs); }
+        .badge-pct { background: rgba(245, 158, 11, 0.14); color: var(--accent-amber); }
 
         .input-wrapper {
             position: relative;
@@ -574,9 +619,9 @@
         }
 
         .chip.active {
-            background: rgba(245, 158, 11, 0.2);
-            color: #fbbf24;
-            border-color: rgba(245, 158, 11, 0.4);
+            background: rgba(245, 158, 11, 0.16);
+            color: var(--accent-amber);
+            border-color: rgba(245, 158, 11, 0.38);
         }
 
         /* Tarjeta de Resultados */
@@ -673,13 +718,13 @@
         .total-bs-val {
             font-size: 18px;
             font-weight: 900;
-            color: var(--primary-light);
+            color: var(--amount-bs);
         }
 
         .copy-pill-btn {
-            background: rgba(16, 185, 129, 0.2);
-            border: 1px solid rgba(16, 185, 129, 0.35);
-            color: var(--primary-light);
+            background: rgba(16, 185, 129, 0.16);
+            border: 1px solid rgba(16, 185, 129, 0.32);
+            color: var(--amount-bs);
             padding: 6px 12px;
             border-radius: 10px;
             font-size: 11px;
@@ -693,7 +738,7 @@
         }
 
         .copy-pill-btn:hover {
-            background: rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.25);
             transform: translateY(-1px);
         }
 
@@ -797,7 +842,7 @@
         }
 
         .footer-right span {
-            color: var(--primary-light);
+            color: var(--amount-bs);
         }
 
         /* Toast de Notificación */
@@ -923,7 +968,7 @@
         .history-total {
             font-size: 14px;
             font-weight: 800;
-            color: var(--primary-light);
+            color: var(--amount-bs);
             text-align: right;
         }
 
@@ -936,8 +981,8 @@
 
         /* Modal Instrucciones e Info */
         .ios-tip-box {
-            background: rgba(56, 189, 248, 0.08);
-            border: 1px solid rgba(56, 189, 248, 0.25);
+            background: var(--tip-box-bg);
+            border: 1px solid var(--banner-border);
             border-radius: 14px;
             padding: 12px 14px;
             margin-top: 10px;
@@ -1037,20 +1082,25 @@
             <!-- Banner de Instalación Rápida PWA -->
             <div class="install-banner" id="installBanner">
                 <div class="install-info">
-                    <svg class="svg-icon" style="color: #38bdf8;" viewBox="0 0 24 24">
+                    <svg class="svg-icon" style="color: var(--accent-blue);" viewBox="0 0 24 24">
                         <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
                         <line x1="12" y1="18" x2="12.01" y2="18"/>
                     </svg>
                     <span>Instalar en tu teléfono (Android / iOS)</span>
                 </div>
-                <button class="install-btn" id="btnInstallPwa" onclick="instalarApp()">
-                    <svg class="svg-icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="7 10 12 15 17 10"/>
-                        <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                    Instalar
-                </button>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <button class="install-btn" id="btnInstallPwa" onclick="instalarApp()">
+                        <svg class="svg-icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Instalar
+                    </button>
+                    <button class="btn-icon-tiny" title="Descartar aviso" onclick="descartarBannerInstalacion()" style="width: 26px; height: 26px; font-size: 11px;">
+                        ✕
+                    </button>
+                </div>
             </div>
 
             <!-- ==========================================
@@ -1324,29 +1374,34 @@
                 </div>
 
                 <div class="ios-tip-box">
-                    <b style="color: #34d399;">🏛️ Dólar BCV &amp; Euro Oficial:</b><br>
+                    <b style="color: var(--amount-bs);">🏛️ Dólar BCV &amp; Euro Oficial:</b><br>
                     Conectado con la tasa oficial publicada por el Banco Central de Venezuela a través del API DolarAPI con respaldo automático.
                 </div>
 
                 <div class="ios-tip-box">
-                    <b style="color: #fbbf24;">🪙 USDT Binance P2P &amp; Paralelo:</b><br>
+                    <b style="color: var(--accent-amber);">🪙 USDT Binance P2P &amp; Paralelo:</b><br>
                     Permite calcular con la cotización promedio de Binance P2P Venezuela y la referencia del mercado paralelo.
                 </div>
 
                 <div class="ios-tip-box">
-                    <b style="color: #c084fc;">✏️ Tasa Personalizada:</b><br>
+                    <b style="color: var(--accent-purple);">✏️ Tasa Personalizada:</b><br>
                     Puedes seleccionar la píldora <b>Personalizada</b> o escribir directamente en el campo para fijar cualquier tasa manual que desees.
                 </div>
 
                 <div class="ios-tip-box">
-                    <b style="color: #38bdf8;">🌗 Modo Oscuro &amp; Claro:</b><br>
+                    <b style="color: var(--accent-blue);">🌗 Modo Oscuro &amp; Claro:</b><br>
                     Toca el icono de sol/luna en la barra superior para alternar instantáneamente entre temas. Tu preferencia se guardará automáticamente en el dispositivo.
                 </div>
 
-                <div class="ios-tip-box">
-                    <b style="color: #38bdf8;">📲 Instalación en iPhone &amp; Android:</b><br>
+                <div class="ios-tip-box only-not-installed" id="installTipBox">
+                    <b style="color: var(--accent-blue);">📲 Instalación en iPhone &amp; Android:</b><br>
                     - <b>En iPhone:</b> Safari > Compartir ⎋ > "Añadir a pantalla de inicio" ➕.<br>
                     - <b>En Android:</b> Chrome > Menú ⋮ > "Instalar aplicación".
+                </div>
+
+                <div class="ios-tip-box only-installed" id="installedTipBox">
+                    <b style="color: var(--amount-bs);">✅ Aplicación Instalada en el Dispositivo:</b><br>
+                    CalculaVE está instalada y funcionando de forma nativa e independiente en tu teléfono, con máxima fluidez y funcionamiento 100% sin conexión.
                 </div>
             </div>
         </div>
@@ -1387,7 +1442,7 @@
                         </svg>
                         GitHub
                     </a>
-                    <a href="https://www.linkedin.com/in/luis-rivero-b88603241/" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 12px; background: rgba(14, 165, 233, 0.12); border: 1px solid rgba(14, 165, 233, 0.35); border-radius: 12px; color: var(--accent-blue); text-decoration: none; font-size: 12.5px; font-weight: 700; transition: var(--transition);">
+                    <a href="https://www.linkedin.com/in/luis-rivero-b88603241/" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 12px; background: var(--tip-box-bg); border: 1px solid var(--banner-border); border-radius: 12px; color: var(--accent-blue); text-decoration: none; font-size: 12.5px; font-weight: 700; transition: var(--transition);">
                         <svg class="svg-icon" style="width: 17px; height: 17px;" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
                         </svg>
@@ -1396,7 +1451,7 @@
                 </div>
 
                 <div class="ios-tip-box" style="margin-top: 0;">
-                    <b style="color: #38bdf8;">📱 Ficha Oficial de la Aplicación:</b><br>
+                    <b style="color: var(--accent-blue);">📱 Ficha Oficial de la Aplicación:</b><br>
                     • <b>Nombre:</b> CalculaVE (Porcentajes y Tasas)<br>
                     • <b>Versión:</b> 1.0.0 Oficial (Producción)<br>
                     • <b>Autor:</b> Luis David Rivero Carmona<br>
@@ -1406,11 +1461,11 @@
                 </div>
 
                 <div class="ios-tip-box">
-                    <b style="color: #34d399;">🛡️ Compromiso de Seguridad y Privacidad:</b><br>
+                    <b style="color: var(--amount-bs);">🛡️ Compromiso de Seguridad y Privacidad:</b><br>
                     Esta app <b>no recopila, no almacena ni comercializa tus datos personales</b>. Todos tus cálculos y preferencias se guardan de forma segura y aislada en tu propio teléfono.
                 </div>
 
-                <button onclick="abrirModalPrivacidad()" style="width: 100%; margin-top: 8px; background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); padding: 12px; border-radius: 12px; font-weight: 600; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: var(--transition);">
+                <button onclick="abrirModalPrivacidad()" style="width: 100%; margin-top: 8px; background: var(--tip-box-bg); color: var(--accent-blue); border: 1px solid var(--banner-border); padding: 12px; border-radius: 12px; font-weight: 600; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: var(--transition);">
                     <svg class="svg-icon" style="width: 16px; height: 16px;" viewBox="0 0 24 24">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                     </svg>
@@ -2145,7 +2200,7 @@
             } catch(e) {}
             const metaTheme = document.querySelector('meta[name="theme-color"]');
             if (metaTheme) {
-                metaTheme.setAttribute('content', tema === 'light' ? '#f8fafc' : '#0a0e1a');
+                metaTheme.setAttribute('content', tema === 'light' ? '#f1f5f9' : '#0a0e1a');
             }
             const iconSun = document.getElementById('themeIconSun');
             const iconMoon = document.getElementById('themeIconMoon');
@@ -2207,11 +2262,60 @@
             });
         }
 
+        function esAppInstalada() {
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+                                 window.matchMedia('(display-mode: fullscreen)').matches ||
+                                 window.matchMedia('(display-mode: minimal-ui)').matches ||
+                                 window.navigator.standalone === true;
+            const isCapacitor = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+            const isNativeProtocol = window.location.protocol === 'capacitor:' || 
+                                     window.location.protocol === 'file:' || 
+                                     window.location.protocol === 'ionic:';
+            const isReferrerApp = typeof document.referrer === 'string' && 
+                                  (document.referrer.includes('android-app://') || document.referrer.includes('capacitor://'));
+            const isMarkedInstalled = localStorage.getItem('calculave_installed') === 'true';
+
+            return isStandalone || isCapacitor || isNativeProtocol || isReferrerApp || isMarkedInstalled;
+        }
+
+        function marcarAppComoInstalada() {
+            localStorage.setItem('calculave_installed', 'true');
+            document.documentElement.classList.add('app-is-installed');
+            if (document.body) document.body.classList.add('app-is-installed');
+            const banner = document.getElementById('installBanner');
+            if (banner) {
+                banner.classList.remove('show');
+                banner.classList.add('installed-hidden');
+                banner.style.display = 'none';
+            }
+            const statusText = document.getElementById('pwaStatusText');
+            if (statusText) statusText.textContent = 'App Instalada';
+        }
+
+        function descartarBannerInstalacion() {
+            vibrar(15);
+            sessionStorage.setItem('calculave_banner_dismissed', 'true');
+            const banner = document.getElementById('installBanner');
+            if (banner) {
+                banner.classList.remove('show');
+                banner.style.display = 'none';
+            }
+        }
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
+            if (esAppInstalada() || sessionStorage.getItem('calculave_banner_dismissed') === 'true') {
+                return;
+            }
             const banner = document.getElementById('installBanner');
             if (banner) banner.classList.add('show');
+        });
+
+        window.addEventListener('appinstalled', () => {
+            marcarAppComoInstalada();
+            deferredPrompt = null;
+            mostrarToast('🎉 ¡CalculaVE instalada en tu dispositivo!', 'success');
         });
 
         function instalarApp() {
@@ -2220,10 +2324,10 @@
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        mostrarToast('🎉 ¡CalculaVE instalada en tu dispositivo!', 'success');
+                        marcarAppComoInstalada();
+                        mostrarToast('🎉 ¡CalculaVE instalada con éxito!', 'success');
                     }
                     deferredPrompt = null;
-                    document.getElementById('installBanner').classList.remove('show');
                 });
             } else {
                 abrirModalAyuda();
@@ -2236,11 +2340,9 @@
             const temaActual = document.documentElement.getAttribute('data-theme') || 'dark';
             aplicarTema(temaActual);
 
-            const esStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-            if (esStandalone) {
-                document.getElementById('pwaStatusText').textContent = 'App Instalada';
-                const banner = document.getElementById('installBanner');
-                if (banner) banner.style.display = 'none';
+            // Verificar si la aplicación ya está instalada
+            if (esAppInstalada()) {
+                marcarAppComoInstalada();
             }
 
             cargarTasasDesdeStorage();

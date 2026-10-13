@@ -104,6 +104,49 @@ Esto garantiza que la **barra de estado de Android** y la cabecera en Safari iOS
 
 ---
 
+## 👁️ 5. Paleta Moderada y Ergonomía Visual (Garantía de Experiencia de Usuario)
+
+Para asegurar una lectura óptima y evitar fatiga visual tanto en ambientes de alta luz diurna como en la oscuridad:
+
+1. **Equilibrio de Contraste (WCAG AAA):**
+   - En Modo Claro, los tonos amarillos o cianes claros de baja legibilidad se reemplazan por tonos semánticos moderados:
+     - `--accent-amber: #b45309` (ámbar profundo, descanso visual y legibilidad garantizada).
+     - `--accent-blue: #0284c7` (azul zafiro institucional nítido).
+     - `--accent-purple: #7c3aed` (violeta suave equilibrado).
+     - `--amount-bs: #047857` (verde esmeralda oscuro de alto contraste sobre fondo blanco).
+   - En Modo Oscuro, los tonos se calibran para evitar reflejos estridentes o fluorescentes sobre fondo profundo (`#0a0e1a`), manteniendo brillo descansado.
+
+2. **Degradados Suaves de Fondo:**
+   - La gradación radial (`#e2e8f0` a `#f1f5f9` en claro; `#111c38` a `#0a0e1a` en oscuro) atenúa los límites de la pantalla y previene el cansancio ocular durante sesiones prolongadas.
+
+---
+
+## 📲 6. Detección y Ocultación Permanente de Opciones de Instalación
+
+Para cumplir con la directiva de experiencia de usuario: *"al instalar en el dispositivo se debe desaparecer la opción de instalar"*, el sistema cuenta con un circuito de detección multicapa:
+
+1. **Detección Previa Inmediata (Zero-FOUC en `<head>`):**
+   Verifica `display-mode: standalone`, `display-mode: fullscreen`, `navigator.standalone === true`, protocolo `capacitor:`, protocolo `file:`, referrer de aplicación o marca persistente en `localStorage`. Si está instalada, inyecta la clase `.app-is-installed` a nivel de raíz (`<html>`).
+
+2. **Reglas CSS Mandatarias:**
+   ```css
+   .app-is-installed #installBanner,
+   .app-is-installed .install-banner,
+   .app-is-installed .only-not-installed {
+       display: none !important;
+   }
+   .app-is-installed .only-installed {
+       display: block;
+   }
+   ```
+
+3. **Eventos Nativos de Navegador y Capacitor:**
+   - Si `esAppInstalada()` es verdadero, el listener de `beforeinstallprompt` aborta de inmediato y nunca muestra el banner.
+   - El evento `appinstalled` guarda permanentemente `calculave_installed = true` y oculta todo rastro de solicitud de instalación.
+   - En el modal de ayuda, la guía de instalación se reemplaza automáticamente por un indicador de confirmación: *"✅ Aplicación Instalada en el Dispositivo"*.
+
+---
+
 ## 👨‍💻 Créditos y Autoría
 
 - **Desarrollador:** Luis David Rivero Carmona (@eLerivero)
