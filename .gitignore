@@ -1,0 +1,24 @@
+# Dependencias Node
+node_modules/
+package-lock.json
+
+# Entorno y Configuración Local
+.env
+.env.local
+.DS_Store
+Thumbs.db
+
+# Compilación y Artefactos de Android
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+android/*.keystore
+android/*.jks
+*.apk
+*.aab
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*

@@ -1,0 +1,38 @@
+{
+  "name": "calculave",
+  "version": "1.0.0",
+  "description": "CalculaVE: Calculadora venezolana de porcentajes, tasas BCV, IVA, IGTF y divisas 100% offline para Android",
+  "main": "index.html",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "start": "npx serve www",
+    "cap:sync": "npm run build && npx cap sync",
+    "cap:android": "npx cap open android",
+    "cap:build-apk": "npm run build && npx cap sync && npx cap build android"
+  },
+  "keywords": [
+    "pwa",
+    "apk",
+    "offline",
+    "calculator",
+    "venezuela",
+    "bcv",
+    "porcentajes",
+    "iva"
+  ],
+  "author": "Luis David Rivero Carmona <elerivero07@gmail.com> (https://github.com/eLerivero)",
+  "homepage": "https://github.com/eLerivero/calculave#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eLerivero/calculave.git"
+  },
+  "bugs": {
+    "url": "https://github.com/eLerivero/calculave/issues"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/android": "^6.0.0"
+  }
+}

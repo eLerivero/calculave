@@ -1,0 +1,2278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>CalculaVE · Calculadora de Porcentajes, Tasas &amp; IVA</title>
+
+    <!-- PWA & Meta Tags Móviles (iOS & Android) -->
+    <meta name="theme-color" content="#0a0e1a">
+    <meta name="description" content="Calculadora venezolana de porcentajes, descuentos y divisas BCV, Euro, USDT y Paralelo 100% offline con soporte modo oscuro y claro. Creada por Luis David Rivero Carmona (@eLerivero).">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CalculaVE">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="CalculaVE">
+    <meta name="author" content="Luis David Rivero Carmona">
+
+    <!-- Inicialización Inmediata del Tema (Sin parpadeo) -->
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('calculave_theme');
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = savedTheme ? savedTheme : (prefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+                const metaTheme = document.querySelector('meta[name="theme-color"]');
+                if (metaTheme) {
+                    metaTheme.setAttribute('content', theme === 'light' ? '#f8fafc' : '#0a0e1a');
+                }
+            } catch(e) {}
+        })();
+    </script>
+
+    <!-- Enlaces PWA e Iconos Locales (Sin dependencias externas) -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #34d399;
+            --bg-base: #0a0e1a;
+            --bg-body-grad: radial-gradient(circle at 50% 0%, #172554 0%, #0a0e1a 60%, #020617 100%);
+            --calculator-bg: rgba(15, 23, 42, 0.82);
+            --surface: rgba(255, 255, 255, 0.04);
+            --surface-hover: rgba(255, 255, 255, 0.07);
+            --surface-active: rgba(255, 255, 255, 0.1);
+            --surface-modal: #0f172a;
+            --border: rgba(255, 255, 255, 0.09);
+            --border-subtle: rgba(255, 255, 255, 0.04);
+            --border-focus: rgba(16, 185, 129, 0.5);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-amber: #f59e0b;
+            --accent-blue: #38bdf8;
+            --accent-purple: #a855f7;
+            --rate-card-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(15, 23, 42, 0.45) 100%);
+            --results-bg: rgba(15, 23, 42, 0.6);
+            --toast-bg: rgba(15, 23, 42, 0.95);
+            --tip-box-bg: rgba(56, 189, 248, 0.08);
+            --total-bs-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(5, 150, 105, 0.06));
+            --shadow-card: 0 20px 45px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
+            --shadow-btn: 0 8px 20px rgba(16, 185, 129, 0.35);
+            --radius-card: 26px;
+            --radius-input: 14px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --primary-light: #10b981;
+            --bg-base: #f8fafc;
+            --bg-body-grad: radial-gradient(circle at 50% 0%, #e0f2fe 0%, #f1f5f9 55%, #e2e8f0 100%);
+            --calculator-bg: rgba(255, 255, 255, 0.92);
+            --surface: rgba(241, 245, 249, 0.85);
+            --surface-hover: rgba(226, 232, 240, 0.95);
+            --surface-active: rgba(203, 213, 225, 0.9);
+            --surface-modal: #ffffff;
+            --border: rgba(203, 213, 225, 0.85);
+            --border-subtle: rgba(226, 232, 240, 0.8);
+            --border-focus: rgba(5, 150, 105, 0.5);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --accent-amber: #d97706;
+            --accent-blue: #0284c7;
+            --accent-purple: #7c3aed;
+            --rate-card-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(248, 250, 252, 0.9) 100%);
+            --results-bg: rgba(248, 250, 252, 0.9);
+            --toast-bg: rgba(255, 255, 255, 0.98);
+            --tip-box-bg: rgba(56, 189, 248, 0.12);
+            --total-bs-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.08));
+            --shadow-card: 0 20px 45px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(203, 213, 225, 0.6);
+            --shadow-btn: 0 8px 20px rgba(5, 150, 105, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-body-grad);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+            overflow-x: hidden;
+            position: relative;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* Canvas nativo sin librerías externas */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Contenedor Principal */
+        .calculator-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 440px;
+            margin: auto;
+        }
+
+        .calculator {
+            background: var(--calculator-bg);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border-radius: var(--radius-card);
+            padding: 24px 22px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-card);
+            transition: var(--transition);
+            animation: slideUp 0.45s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Barra Superior / Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 64px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 2px;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .app-logo {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 18px rgba(16, 185, 129, 0.35);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .app-logo svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .header-titles h1 {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            line-height: 1.15;
+        }
+
+        .header-titles h1 .highlight {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-titles p {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+
+        .dot-pulse {
+            width: 7px;
+            height: 7px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+            animation: pulseDot 2s infinite;
+        }
+
+        @keyframes pulseDot {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Banner de Instalación PWA (Android / iOS) */
+        .install-banner {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(16, 185, 129, 0.15));
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 14px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .install-banner.show {
+            display: flex;
+        }
+
+        .install-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .install-btn {
+            background: linear-gradient(135deg, #0284c7, #0ea5e9);
+            color: #ffffff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-icon-tiny {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-secondary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-icon-tiny:hover {
+            color: var(--text-primary);
+            background: var(--surface-hover);
+        }
+
+        /* =======================================
+           TARJETA MULTIMONEDA & TASAS EN VIVO
+           ======================================= */
+        .rate-card {
+            background: var(--rate-card-bg);
+            border: 1px solid rgba(16, 185, 129, 0.18);
+            border-radius: 18px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .rate-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .rate-title-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--text-secondary);
+        }
+
+        .rate-actions-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sync-btn {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--primary-light);
+            border-radius: 8px;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .sync-btn:hover {
+            background: rgba(16, 185, 129, 0.25);
+        }
+
+        .sync-btn.loading svg {
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Selector de Fuentes de Tasas (Píldoras) */
+        .currency-sources-bar {
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 12px;
+            padding-bottom: 2px;
+        }
+
+        .currency-sources-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .source-pill {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            user-select: none;
+        }
+
+        .source-pill:hover {
+            color: var(--text-primary);
+            background: var(--surface-hover);
+        }
+
+        .source-pill.active {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.2));
+            color: #34d399;
+            border-color: rgba(16, 185, 129, 0.45);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+        }
+
+        .source-pill.active.euro {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(2, 132, 199, 0.2));
+            color: #38bdf8;
+            border-color: rgba(56, 189, 248, 0.45);
+        }
+
+        .source-pill.active.usdt {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.2));
+            color: #fbbf24;
+            border-color: rgba(245, 158, 11, 0.45);
+        }
+
+        .source-pill.active.custom {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(126, 34, 206, 0.2));
+            color: #c084fc;
+            border-color: rgba(168, 85, 247, 0.45);
+        }
+
+        /* Detalle y fecha de la tasa */
+        .rate-meta-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 10.5px;
+            color: var(--text-muted);
+        }
+
+        .rate-meta-footer span b {
+            color: var(--text-secondary);
+        }
+
+        .badge-pill {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        .badge-usd { background: rgba(56, 189, 248, 0.16); color: var(--accent-blue); }
+        .badge-bs { background: rgba(16, 185, 129, 0.16); color: var(--primary-light); }
+        .badge-pct { background: rgba(245, 158, 11, 0.16); color: var(--accent-amber); }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            width: 18px;
+            height: 18px;
+            color: var(--text-muted);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 14px 12px 42px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-input);
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            outline: none;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .input-field:focus {
+            background: rgba(16, 185, 129, 0.05);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* Grid de Divisas Doble */
+        .currency-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .field-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        /* Fila de porcentaje y botones rápidos */
+        .discount-container {
+            margin-bottom: 18px;
+        }
+
+        .quick-chips {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-top: 8px;
+            padding-bottom: 2px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .quick-chips::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chip {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 11px;
+            border-radius: 10px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
+            user-select: none;
+        }
+
+        .chip:hover, .chip:active {
+            color: var(--text-primary);
+            background: var(--surface-hover);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .chip.active {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border-color: rgba(245, 158, 11, 0.4);
+        }
+
+        /* Tarjeta de Resultados */
+        .results-box {
+            background: var(--results-bg);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 16px 18px;
+            margin-bottom: 18px;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .results-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .results-title svg {
+            width: 14px;
+            height: 14px;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+
+        .res-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 7px 0;
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .res-value {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text-primary);
+            transition: transform 0.2s ease;
+        }
+
+        .res-discount {
+            color: var(--accent-amber);
+            background: rgba(245, 158, 11, 0.12);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .res-total-usd {
+            color: var(--accent-blue);
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .divider-dashed {
+            border: none;
+            border-top: 1px dashed var(--border);
+            margin: 8px 0;
+        }
+
+        /* Destacado Pago Móvil / Total Bs */
+        .total-bs-card {
+            background: var(--total-bs-bg);
+            border: 1px solid rgba(16, 185, 129, 0.22);
+            border-radius: 13px;
+            padding: 12px 14px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            transition: background 0.3s ease;
+            justify-content: space-between;
+        }
+
+        .total-bs-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .total-bs-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .total-bs-val {
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--primary-light);
+        }
+
+        .copy-pill-btn {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: var(--primary-light);
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+            user-select: none;
+        }
+
+        .copy-pill-btn:hover {
+            background: rgba(16, 185, 129, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .copy-pill-btn:active {
+            transform: scale(0.96);
+        }
+
+        .copy-pill-btn.copied {
+            background: #10b981;
+            color: #ffffff;
+            border-color: #10b981;
+        }
+
+        /* Botones de Acción */
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .btn-main {
+            padding: 13px 18px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            border-radius: var(--radius-input);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: var(--shadow-btn);
+            transition: var(--transition);
+        }
+
+        .btn-main:active {
+            transform: scale(0.98);
+        }
+
+        .btn-icon {
+            padding: 13px 15px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-input);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .btn-icon:hover {
+            background: var(--surface-hover);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-icon:active {
+            transform: scale(0.95);
+        }
+
+        /* Pie de Página */
+        .footer {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .footer-badge-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 7px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .footer-right {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-right span {
+            color: var(--primary-light);
+        }
+
+        /* Toast de Notificación */
+        .toast {
+            position: fixed;
+            bottom: max(24px, env(safe-area-inset-bottom));
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            opacity: 0;
+            pointer-events: none;
+            padding: 12px 20px;
+            background: var(--toast-bg);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 1000;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 90vw;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .toast-success { border-color: rgba(16, 185, 129, 0.4); }
+        .toast-error { border-color: rgba(239, 68, 68, 0.4); }
+        .toast-info { border-color: rgba(56, 189, 248, 0.4); }
+
+        /* Modal Historial */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 900;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-sheet {
+            background: var(--surface-modal);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            border-bottom: none;
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-width: 440px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            padding-bottom: max(20px, env(safe-area-inset-bottom));
+            animation: slideUpModal 0.3s ease-out;
+        }
+
+        @keyframes slideUpModal {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h3 {
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .modal-body {
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 4px;
+        }
+
+        .history-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .history-card:hover {
+            background: var(--surface-hover);
+        }
+
+        .history-calc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .history-total {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--primary-light);
+            text-align: right;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 30px 10px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* Modal Instrucciones e Info */
+        .ios-tip-box {
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-top: 10px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .ios-tip-box b {
+            color: var(--text-primary);
+        }
+
+        /* SVG utilidades */
+        .svg-icon {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; } to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fondo interactivo en Canvas (100% nativo offline, 0 KB CDN) -->
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="calculator-wrapper">
+        <main class="calculator">
+            <!-- Header Superior -->
+            <header class="header">
+                <div class="header-brand">
+                    <div class="app-logo" aria-hidden="true">
+                        <!-- Icono SVG Calculadora -->
+                        <svg viewBox="0 0 24 24">
+                            <rect x="4" y="2" width="16" height="20" rx="3" ry="3" fill="none" stroke="#ffffff" stroke-width="2"/>
+                            <line x1="8" y1="6" x2="16" y2="6" stroke="#ffffff" stroke-width="2"/>
+                            <line x1="16" y1="14" x2="16" y2="18" stroke="#34d399" stroke-width="2.5"/>
+                            <circle cx="8" cy="11" r="1" fill="#ffffff"/>
+                            <circle cx="12" cy="11" r="1" fill="#ffffff"/>
+                            <circle cx="16" cy="11" r="1" fill="#ffffff"/>
+                            <circle cx="8" cy="15" r="1" fill="#ffffff"/>
+                            <circle cx="12" cy="15" r="1" fill="#ffffff"/>
+                            <circle cx="8" cy="18" r="1" fill="#ffffff"/>
+                            <circle cx="12" cy="18" r="1" fill="#ffffff"/>
+                        </svg>
+                    </div>
+                    <div class="header-titles">
+                        <h1>Calcula<span class="highlight">VE</span></h1>
+                        <p>BCV · Euro · USDT · Paralelo</p>
+                    </div>
+                </div>
+
+                <div class="header-actions">
+                    <div class="badge-status" id="pwaStatusBadge">
+                        <span class="dot-pulse" id="statusPulseDot"></span>
+                        <span id="pwaStatusText">BCV Conectado</span>
+                    </div>
+                    <button class="btn-icon-tiny" id="btnThemeToggle" title="Cambiar a Modo Claro / Oscuro" onclick="alternarTema()" aria-label="Cambiar tema">
+                        <svg class="svg-icon" id="themeIconSun" style="width: 15px; height: 15px; display: none;" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1" x2="12" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1" y1="12" x2="3" y2="12"/>
+                            <line x1="21" y1="12" x2="23" y2="12"/>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                        </svg>
+                        <svg class="svg-icon" id="themeIconMoon" style="width: 15px; height: 15px; display: block;" viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </button>
+                    <button class="btn-icon-tiny" id="btnHelp" title="Información y Guía" onclick="abrirModalAyuda()">
+                        <svg class="svg-icon" style="width: 15px; height: 15px;" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="16" x2="12" y2="12"/>
+                            <line x1="12" y1="8" x2="12.01" y2="8"/>
+                        </svg>
+                    </button>
+                    <button class="btn-icon-tiny" id="btnAuthor" title="Creador y Privacidad" onclick="abrirModalAutor()">
+                        <svg class="svg-icon" style="width: 15px; height: 15px;" viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Banner de Instalación Rápida PWA -->
+            <div class="install-banner" id="installBanner">
+                <div class="install-info">
+                    <svg class="svg-icon" style="color: #38bdf8;" viewBox="0 0 24 24">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                        <line x1="12" y1="18" x2="12.01" y2="18"/>
+                    </svg>
+                    <span>Instalar en tu teléfono (Android / iOS)</span>
+                </div>
+                <button class="install-btn" id="btnInstallPwa" onclick="instalarApp()">
+                    <svg class="svg-icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Instalar
+                </button>
+            </div>
+
+            <!-- ==========================================
+                 SECCIÓN MULTIMONEDA & TASAS EN VIVO
+                 ========================================== -->
+            <section class="rate-card">
+                <div class="rate-header-row">
+                    <div class="rate-title-box">
+                        <svg class="svg-icon" style="width: 14px; height: 14px; color: var(--primary);" viewBox="0 0 24 24">
+                            <line x1="12" y1="1" x2="12" y2="23"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                        <span>Tasa de Cambio en Vivo</span>
+                    </div>
+                    <div class="rate-actions-box">
+                        <button type="button" class="sync-btn" id="btnSyncRate" onclick="sincronizarTasasOnline(true)" title="Actualizar precio del día online">
+                            <svg class="svg-icon" id="syncIconSvg" style="width: 12px; height: 12px;" viewBox="0 0 24 24">
+                                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-1.19"/>
+                            </svg>
+                            <span id="syncBtnLabel">Sincronizar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Selector de Fuente (Dólar BCV, Euro BCV, Paralelo, USDT Binance, Personalizada) -->
+                <div class="currency-sources-bar">
+                    <button type="button" class="source-pill active" id="btnSrcBcv" onclick="cambiarFuenteTasa('bcv')">
+                        🏛️ Dólar BCV
+                    </button>
+                    <button type="button" class="source-pill euro" id="btnSrcEur" onclick="cambiarFuenteTasa('eur')">
+                        💶 Euro BCV
+                    </button>
+                    <button type="button" class="source-pill" id="btnSrcParalelo" onclick="cambiarFuenteTasa('paralelo')">
+                        ⚡ Paralelo
+                    </button>
+                    <button type="button" class="source-pill usdt" id="btnSrcUsdt" onclick="cambiarFuenteTasa('usdt')">
+                        🪙 USDT (P2P)
+                    </button>
+                    <button type="button" class="source-pill custom" id="btnSrcCustom" onclick="cambiarFuenteTasa('custom')">
+                        ✏️ Personalizada
+                    </button>
+                </div>
+
+                <div class="input-wrapper">
+                    <div class="input-icon">
+                        <svg class="svg-icon" id="rateInputIcon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v12M15 9.5a2.5 2.5 0 0 0-5 0c0 4 5 1 5 5a2.5 2.5 0 0 1-5 0"/>
+                        </svg>
+                    </div>
+                    <input type="number" inputmode="decimal" class="input-field" id="exchangeRate" value="875.65" min="0.01" step="any" placeholder="Ej: 875.65" oninput="marcarComoPersonalizadaSiEdita(); calcular(true)">
+                </div>
+
+                <div class="rate-meta-footer">
+                    <span id="rateSourceText">Fuente: <b>Banco Central de Venezuela (BCV)</b></span>
+                    <span id="rateDateText">Cargando...</span>
+                </div>
+            </section>
+
+            <!-- Precios Divisa Extranjera (USD / EUR) y Bs (Sincronización Bidireccional) -->
+            <section class="currency-grid">
+                <div>
+                    <div class="field-label">
+                        <span id="labelForeignPrice">Precio USD</span>
+                        <span class="badge-pill badge-usd" id="badgeForeignCurrency">$ USD</span>
+                    </div>
+                    <div class="input-wrapper">
+                        <div class="input-icon">
+                            <svg class="svg-icon" id="foreignCurrencySvg" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 6v12M15 9.5a2.5 2.5 0 0 0-5 0c0 4 5 1 5 5a2.5 2.5 0 0 1-5 0"/>
+                            </svg>
+                        </div>
+                        <input type="number" inputmode="decimal" class="input-field" id="priceUSD" placeholder="0.00" min="0" step="any" oninput="convertirMoneda('usd')">
+                    </div>
+                </div>
+
+                <div>
+                    <div class="field-label">
+                        <span>Precio Bs</span>
+                        <span class="badge-pill badge-bs">Bs</span>
+                    </div>
+                    <div class="input-wrapper">
+                        <div class="input-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <rect x="3" y="5" width="18" height="14" rx="2"/>
+                                <line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                        </div>
+                        <input type="number" inputmode="decimal" class="input-field" id="priceBS" placeholder="0.00" min="0" step="any" oninput="convertirMoneda('bs')">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Descuento y Chips Rápidos -->
+            <section class="discount-container">
+                <div class="field-label">
+                    <span>🎯 Porcentaje de Descuento</span>
+                    <span class="badge-pill badge-pct">% OFF</span>
+                </div>
+                <div class="input-wrapper">
+                    <div class="input-icon">
+                        <svg class="svg-icon" viewBox="0 0 24 24">
+                            <line x1="19" y1="5" x2="5" y2="19"/>
+                            <circle cx="6.5" cy="6.5" r="2.5"/>
+                            <circle cx="17.5" cy="17.5" r="2.5"/>
+                        </svg>
+                    </div>
+                    <input type="number" inputmode="decimal" class="input-field" id="discount" value="27" placeholder="Ej: 27" min="0" max="100" step="any" oninput="actualizarChips(); calcular(true)">
+                </div>
+
+                <!-- Chips para seleccionar descuentos frecuentes en 1 toque -->
+                <div class="quick-chips">
+                    <button type="button" class="chip" onclick="seleccionarChip(5)">5%</button>
+                    <button type="button" class="chip" onclick="seleccionarChip(10)">10%</button>
+                    <button type="button" class="chip" onclick="seleccionarChip(15)">15%</button>
+                    <button type="button" class="chip" onclick="seleccionarChip(20)">20%</button>
+                    <button type="button" class="chip active" onclick="seleccionarChip(27)">27%</button>
+                    <button type="button" class="chip" onclick="seleccionarChip(30)">30%</button>
+                    <button type="button" class="chip" onclick="seleccionarChip(50)">50%</button>
+                </div>
+            </section>
+
+            <!-- Caja de Resultados -->
+            <section class="results-box" id="resultsSection">
+                <div class="results-title">
+                    <span>
+                        <svg class="svg-icon" viewBox="0 0 24 24">
+                            <line x1="18" y1="20" x2="18" y2="10"/>
+                            <line x1="12" y1="20" x2="12" y2="4"/>
+                            <line x1="6" y1="20" x2="6" y2="14"/>
+                        </svg>
+                        Resumen de Descuento
+                    </span>
+                    <span id="calcSummaryLabel" style="font-size: 10px; color: var(--text-muted);">BCV Oficial</span>
+                </div>
+
+                <!-- Divisa Extranjera (USD / EUR) -->
+                <div class="res-row">
+                    <span id="labelDiscountForeign">Ahorro Descuento ($)</span>
+                    <span class="res-discount" id="discountAmountUSD">$0.00</span>
+                </div>
+                <div class="res-row">
+                    <span id="labelTotalForeign">Total a Pagar ($)</span>
+                    <span class="res-value res-total-usd" id="totalAmountUSD">$0.00</span>
+                </div>
+
+                <hr class="divider-dashed">
+
+                <!-- Bs -->
+                <div class="res-row">
+                    <span>Ahorro Descuento (Bs)</span>
+                    <span class="res-discount" id="discountAmountBS">0.00 Bs</span>
+                </div>
+
+                <!-- Total Bs con botón copiar rápido para Pago Móvil -->
+                <div class="total-bs-card">
+                    <span class="total-bs-label">Total en Bs</span>
+                    <div class="total-bs-group">
+                        <span class="total-bs-val" id="totalAmountBS">0.00 Bs</span>
+                        <button type="button" class="copy-pill-btn" id="btnCopyBs" onclick="copiarMontoBs()" title="Copiar monto exacto en Bolívares">
+                            <svg class="svg-icon" id="copyIconSvg" style="width: 13px; height: 13px;" viewBox="0 0 24 24">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                            </svg>
+                            <span id="copyBtnText">Copiar</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Acciones -->
+            <div class="action-grid">
+                <button type="button" class="btn-main" onclick="guardarYCalcular()">
+                    <svg class="svg-icon" viewBox="0 0 24 24">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    Calcular &amp; Guardar
+                </button>
+
+                <button type="button" class="btn-icon" onclick="compartirResultado()" title="Compartir resultado en WhatsApp">
+                    <svg class="svg-icon" viewBox="0 0 24 24">
+                        <circle cx="18" cy="5" r="3"/>
+                        <circle cx="6" cy="12" r="3"/>
+                        <circle cx="18" cy="19" r="3"/>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                    </svg>
+                </button>
+
+                <button type="button" class="btn-icon" onclick="abrirHistorial()" title="Ver historial de cálculos">
+                    <svg class="svg-icon" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </button>
+
+                <button type="button" class="btn-icon" onclick="limpiarCampos()" title="Restablecer">
+                    <svg class="svg-icon" viewBox="0 0 24 24">
+                        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                        <path d="M21 3v5h-5"/>
+                        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                        <path d="M8 16H3v5"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer" onclick="abrirModalAutor()" style="cursor: pointer;" title="Toca para ver información del autor y políticas">
+                <div class="footer-left">
+                    <div class="footer-badge-icon">🇻🇪</div>
+                    <span>CalculaVE Oficial</span>
+                </div>
+                <div class="footer-right">
+                    100% Offline · <span>Por Luis David Rivero Carmona</span>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Toast emergente -->
+    <div class="toast" id="toastBox">
+        <svg class="svg-icon" id="toastIcon" viewBox="0 0 24 24" style="color: var(--primary-light);">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+        <span id="toastText">Mensaje</span>
+    </div>
+
+    <!-- Modal Historial -->
+    <div class="modal-overlay" id="historyModal" onclick="cerrarModalSiFuera(event, 'historyModal')">
+        <div class="modal-sheet">
+            <div class="modal-header">
+                <h3>📜 Historial Reciente</h3>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-icon-tiny" onclick="borrarHistorial()" title="Borrar todo">
+                        <svg class="svg-icon" style="width: 14px; height: 14px; color: #ef4444;" viewBox="0 0 24 24">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                    </button>
+                    <button class="btn-icon-tiny" onclick="cerrarHistorial()">
+                        <svg class="svg-icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body" id="historyList">
+                <!-- Tarjetas dinámicas -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ayuda e Información de APIs -->
+    <div class="modal-overlay" id="helpModal" onclick="cerrarModalSiFuera(event, 'helpModal')">
+        <div class="modal-sheet">
+            <div class="modal-header">
+                <h3>💱 Sistema Multimoneda &amp; PWA</h3>
+                <button class="btn-icon-tiny" onclick="cerrarModalAyuda()">
+                    <svg class="svg-icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+                    Esta app incluye conexión con las <b>APIs de divisas venezolanas</b> en tiempo real, soporte para <b>Modo Oscuro &amp; Modo Claro</b> y funcionamiento 100% offline para Android e iOS.
+                </div>
+
+                <div class="ios-tip-box">
+                    <b style="color: #34d399;">🏛️ Dólar BCV &amp; Euro Oficial:</b><br>
+                    Conectado con la tasa oficial publicada por el Banco Central de Venezuela a través del API DolarAPI con respaldo automático.
+                </div>
+
+                <div class="ios-tip-box">
+                    <b style="color: #fbbf24;">🪙 USDT Binance P2P &amp; Paralelo:</b><br>
+                    Permite calcular con la cotización promedio de Binance P2P Venezuela y la referencia del mercado paralelo.
+                </div>
+
+                <div class="ios-tip-box">
+                    <b style="color: #c084fc;">✏️ Tasa Personalizada:</b><br>
+                    Puedes seleccionar la píldora <b>Personalizada</b> o escribir directamente en el campo para fijar cualquier tasa manual que desees.
+                </div>
+
+                <div class="ios-tip-box">
+                    <b style="color: #38bdf8;">🌗 Modo Oscuro &amp; Claro:</b><br>
+                    Toca el icono de sol/luna en la barra superior para alternar instantáneamente entre temas. Tu preferencia se guardará automáticamente en el dispositivo.
+                </div>
+
+                <div class="ios-tip-box">
+                    <b style="color: #38bdf8;">📲 Instalación en iPhone &amp; Android:</b><br>
+                    - <b>En iPhone:</b> Safari > Compartir ⎋ > "Añadir a pantalla de inicio" ➕.<br>
+                    - <b>En Android:</b> Chrome > Menú ⋮ > "Instalar aplicación".
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Autor & Desarrollador (Luis David Rivero Carmona) -->
+    <div class="modal-overlay" id="authorModal" onclick="cerrarModalSiFuera(event, 'authorModal')">
+        <div class="modal-sheet">
+            <div class="modal-header">
+                <h3>👨‍💻 Sobre el Desarrollador</h3>
+                <button class="btn-icon-tiny" onclick="cerrarModalAutor()">
+                    <svg class="svg-icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; padding: 6px 0 16px;">
+                    <div style="width: 66px; height: 66px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #0284c7); margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 8px 22px rgba(16, 185, 129, 0.45);">
+                        👨‍💻
+                    </div>
+                    <h3 style="font-size: 20px; color: var(--text-primary); margin-bottom: 2px; font-weight: 700;">Luis David Rivero Carmona</h3>
+                    <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;">@eLerivero</div>
+                    <div style="display: inline-block; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: var(--primary-light); padding: 4px 14px; border-radius: 99px; font-size: 11.5px; font-weight: 600;">
+                        Creador &amp; Desarrollador Principal 🇻🇪
+                    </div>
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-top: 10px; line-height: 1.55;">
+                        Herramienta financiera rápida, privada, con soporte para modo oscuro y claro, 100% funcional sin conexión en toda Venezuela.
+                    </p>
+                </div>
+
+                <!-- Enlaces directos a perfiles oficiales del autor -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                    <a href="https://github.com/eLerivero" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; color: var(--text-primary); text-decoration: none; font-size: 12.5px; font-weight: 700; transition: var(--transition);">
+                        <svg class="svg-icon" style="width: 17px; height: 17px;" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+                        </svg>
+                        GitHub
+                    </a>
+                    <a href="https://www.linkedin.com/in/luis-rivero-b88603241/" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 12px; background: rgba(14, 165, 233, 0.12); border: 1px solid rgba(14, 165, 233, 0.35); border-radius: 12px; color: var(--accent-blue); text-decoration: none; font-size: 12.5px; font-weight: 700; transition: var(--transition);">
+                        <svg class="svg-icon" style="width: 17px; height: 17px;" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                        </svg>
+                        LinkedIn
+                    </a>
+                </div>
+
+                <div class="ios-tip-box" style="margin-top: 0;">
+                    <b style="color: #38bdf8;">📱 Ficha Oficial de la Aplicación:</b><br>
+                    • <b>Nombre:</b> CalculaVE (Porcentajes y Tasas)<br>
+                    • <b>Versión:</b> 1.0.0 Oficial (Producción)<br>
+                    • <b>Autor:</b> Luis David Rivero Carmona<br>
+                    • <b>Paquete Android:</b> <code>com.elerivero.calculave</code><br>
+                    • <b>Temas:</b> Soporte Modo Oscuro y Modo Claro<br>
+                    • <b>Arquitectura:</b> 100% Offline · Zero-CDN · Alta Privacidad
+                </div>
+
+                <div class="ios-tip-box">
+                    <b style="color: #34d399;">🛡️ Compromiso de Seguridad y Privacidad:</b><br>
+                    Esta app <b>no recopila, no almacena ni comercializa tus datos personales</b>. Todos tus cálculos y preferencias se guardan de forma segura y aislada en tu propio teléfono.
+                </div>
+
+                <button onclick="abrirModalPrivacidad()" style="width: 100%; margin-top: 8px; background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); padding: 12px; border-radius: 12px; font-weight: 600; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: var(--transition);">
+                    <svg class="svg-icon" style="width: 16px; height: 16px;" viewBox="0 0 24 24">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    Ver Política de Privacidad Completa
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Política de Privacidad In-App -->
+    <div class="modal-overlay" id="privacyModal" onclick="cerrarModalSiFuera(event, 'privacyModal')">
+        <div class="modal-sheet">
+            <div class="modal-header">
+                <h3>🛡️ Política de Privacidad</h3>
+                <button class="btn-icon-tiny" onclick="cerrarModalPrivacidad()">
+                    <svg class="svg-icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+                <div style="background: rgba(16, 185, 129, 0.12); border-left: 3px solid var(--primary); padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; color: var(--text-primary);">
+                    <b>Cero Recopilación de Datos (Zero-PII):</b> CalculaVE no recopila información personal identificable, cookies de rastreo ni identificadores de publicidad.
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <b style="color: var(--text-primary); font-size: 13.5px;">1. Almacenamiento Local (LocalStorage)</b><br>
+                    Tu historial de cálculos y las tasas configuradas se guardan estrictamente en la memoria local de tu dispositivo móvil. Nunca se transmiten a servidores externos y puedes borrarlos cuando desees.
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <b style="color: var(--text-primary); font-size: 13.5px;">2. Conexiones a APIs de Tasas (BCV / USDT)</b><br>
+                    Las peticiones de red son consultas anónimas y cifradas con HTTPS hacia endpoints públicos para obtener el valor del día. No contienen identificadores de usuario.
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <b style="color: var(--text-primary); font-size: 13.5px;">3. Responsable del Desarrollo</b><br>
+                    • <b>Desarrollador:</b> Luis David Rivero Carmona (@eLerivero)<br>
+                    • <b>GitHub:</b> <a href="https://github.com/eLerivero" target="_blank" rel="noopener noreferrer" style="color: var(--primary-light);">github.com/eLerivero</a><br>
+                    • <b>LinkedIn:</b> <a href="https://www.linkedin.com/in/luis-rivero-b88603241/" target="_blank" rel="noopener noreferrer" style="color: var(--accent-blue);">linkedin.com/in/luis-rivero-b88603241</a><br>
+                    • <b>Ubicación:</b> Venezuela 🇻🇪
+                </div>
+
+                <a href="privacy.html" target="_blank" style="display: block; text-align: center; color: var(--primary-light); font-size: 12px; margin-top: 14px; text-decoration: none;">
+                    Abrir versión web completa de la política ↗
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. MOTOR DE PARTÍCULAS EN CANVAS (Sin CDN)
+        // ==========================================
+        (function initCanvasParticles() {
+            const canvas = document.getElementById('bg-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let w, h;
+            let animationFrameId;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const particleCount = Math.min(45, Math.floor((window.innerWidth * window.innerHeight) / 18000));
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    vx: (Math.random() - 0.5) * 0.45,
+                    vy: (Math.random() - 0.5) * 0.45,
+                    radius: Math.random() * 2 + 1,
+                    alpha: Math.random() * 0.25 + 0.1
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, w, h);
+                const maxDist = 125;
+                const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+                const pColor = isLight ? '5, 150, 105' : '16, 185, 129';
+
+                for (let i = 0; i < particles.length; i++) {
+                    const p1 = particles[i];
+                    p1.x += p1.vx;
+                    p1.y += p1.vy;
+
+                    if (p1.x < 0) p1.x = w;
+                    if (p1.x > w) p1.x = 0;
+                    if (p1.y < 0) p1.y = h;
+                    if (p1.y > h) p1.y = 0;
+
+                    ctx.beginPath();
+                    ctx.arc(p1.x, p1.y, p1.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${pColor}, ${p1.alpha * (isLight ? 0.75 : 1)})`;
+                    ctx.fill();
+
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < maxDist) {
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            const linkAlpha = (1 - dist / maxDist) * (isLight ? 0.08 : 0.12);
+                            ctx.strokeStyle = `rgba(${pColor}, ${linkAlpha})`;
+                            ctx.lineWidth = 0.8;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                animationFrameId = requestAnimationFrame(draw);
+            }
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    cancelAnimationFrame(animationFrameId);
+                } else {
+                    animationFrameId = requestAnimationFrame(draw);
+                }
+            });
+
+            draw();
+        })();
+
+        // ==========================================
+        // 2. MOTOR DE APIS MULTIMONEDA BCV / PARALELO / USDT
+        // ==========================================
+        const RATES_STORAGE_KEY = 'lr_multicurrency_rates_v1';
+        let fuenteActual = 'bcv'; // 'bcv', 'eur', 'paralelo', 'usdt', 'custom'
+
+        // Estructura de caché de tasas
+        let ratesCache = {
+            bcv: { valor: 875.65, fecha: '', nombre: 'Dólar BCV Oficial' },
+            eur: { valor: 980.61, fecha: '', nombre: 'Euro BCV Oficial' },
+            paralelo: { valor: 1007.66, fecha: '', nombre: 'Dólar Paralelo' },
+            usdt: { valor: 1013.00, fecha: '', nombre: 'USDT Binance P2P' },
+            custom: { valor: 875.65, fecha: '', nombre: 'Tasa Personalizada' }
+        };
+
+        function cargarTasasDesdeStorage() {
+            try {
+                const stored = localStorage.getItem(RATES_STORAGE_KEY);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    ratesCache = Object.assign(ratesCache, parsed);
+                }
+            } catch (e) {}
+        }
+
+        function guardarTasasEnStorage() {
+            try {
+                localStorage.setItem(RATES_STORAGE_KEY, JSON.stringify(ratesCache));
+            } catch (e) {}
+        }
+
+        // Petición con Timeout para evitar esperas infinitas si no hay internet
+        async function fetchConTimeout(url, timeoutMs = 5000) {
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), timeoutMs);
+            try {
+                const res = await fetch(url, { signal: controller.signal });
+                clearTimeout(id);
+                return res;
+            } catch (err) {
+                clearTimeout(id);
+                throw err;
+            }
+        }
+
+        async function sincronizarTasasOnline(mostrarNotificacion = true) {
+            const syncBtn = document.getElementById('btnSyncRate');
+            const syncLabel = document.getElementById('syncBtnLabel');
+            syncBtn.classList.add('loading');
+            syncLabel.textContent = 'Cargando...';
+
+            let exitos = 0;
+
+            // 1. Dólar BCV y Paralelo desde ve.dolarapi.com
+            try {
+                const resDolares = await fetchConTimeout('https://ve.dolarapi.com/v1/dolares');
+                if (resDolares.ok) {
+                    const data = await resDolares.json();
+                    data.forEach(item => {
+                        if (item.fuente === 'oficial' && item.promedio) {
+                            ratesCache.bcv.valor = parseFloat(item.promedio);
+                            ratesCache.bcv.fecha = formatearFechaActualizacion(item.fechaActualizacion);
+                            exitos++;
+                        } else if (item.fuente === 'paralelo' && item.promedio) {
+                            ratesCache.paralelo.valor = parseFloat(item.promedio);
+                            ratesCache.paralelo.fecha = formatearFechaActualizacion(item.fechaActualizacion);
+                            exitos++;
+                        }
+                    });
+                }
+            } catch (e) {
+                console.warn('Fallo primario ve.dolarapi dolares:', e);
+                // Intento respaldo para BCV desde open.er-api
+                try {
+                    const resBackup = await fetchConTimeout('https://open.er-api.com/v6/latest/USD');
+                    if (resBackup.ok) {
+                        const bData = await resBackup.json();
+                        if (bData.rates && bData.rates.VES) {
+                            ratesCache.bcv.valor = parseFloat(bData.rates.VES);
+                            ratesCache.bcv.fecha = 'Respaldo hoy';
+                            exitos++;
+                        }
+                    }
+                } catch (bErr) {}
+            }
+
+            // 2. Euro BCV desde ve.dolarapi.com
+            try {
+                const resEur = await fetchConTimeout('https://ve.dolarapi.com/v1/euros/oficial');
+                if (resEur.ok) {
+                    const dataEur = await resEur.json();
+                    if (dataEur.promedio) {
+                        ratesCache.eur.valor = parseFloat(dataEur.promedio);
+                        ratesCache.eur.fecha = formatearFechaActualizacion(dataEur.fechaActualizacion);
+                        exitos++;
+                    }
+                }
+            } catch (e) {
+                console.warn('Fallo ve.dolarapi euros:', e);
+            }
+
+            // 3. USDT Binance P2P desde criptoya.com
+            try {
+                const resUsdt = await fetchConTimeout('https://criptoya.com/api/usdt/ves');
+                if (resUsdt.ok) {
+                    const dataUsdt = await resUsdt.json();
+                    if (dataUsdt.binancep2p && dataUsdt.binancep2p.bid) {
+                        ratesCache.usdt.valor = parseFloat(dataUsdt.binancep2p.bid);
+                        ratesCache.usdt.fecha = 'En vivo P2P';
+                        exitos++;
+                    }
+                }
+            } catch (e) {
+                console.warn('Fallo criptoya usdt:', e);
+            }
+
+            syncBtn.classList.remove('loading');
+            syncLabel.textContent = 'Sincronizar';
+
+            guardarTasasEnStorage();
+
+            // Aplicar la fuente actual
+            aplicarTasaEnPantalla(false);
+
+            if (mostrarNotificacion) {
+                if (exitos > 0) {
+                    mostrarToast(`✅ Tasas actualizadas en vivo (${exitos} fuentes)`, 'success');
+                    document.getElementById('statusPulseDot').style.background = '#10b981';
+                    document.getElementById('pwaStatusText').textContent = 'Online BCV';
+                } else {
+                    mostrarToast('⚠️ Sin conexión. Usando últimas tasas guardadas.', 'info');
+                    document.getElementById('statusPulseDot').style.background = '#f59e0b';
+                    document.getElementById('pwaStatusText').textContent = 'Modo Offline';
+                }
+            }
+        }
+
+        function formatearFechaActualizacion(isoString) {
+            if (!isoString) return 'Hoy';
+            try {
+                const d = new Date(isoString);
+                return d.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' +
+                       d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            } catch (e) {
+                return 'Hoy';
+            }
+        }
+
+        function cambiarFuenteTasa(fuente) {
+            vibrar(12);
+            fuenteActual = fuente;
+
+            // Actualizar estilo visual de las píldoras
+            document.querySelectorAll('.source-pill').forEach(btn => btn.classList.remove('active'));
+            if (fuente === 'bcv') document.getElementById('btnSrcBcv').classList.add('active');
+            if (fuente === 'eur') document.getElementById('btnSrcEur').classList.add('active');
+            if (fuente === 'paralelo') document.getElementById('btnSrcParalelo').classList.add('active');
+            if (fuente === 'usdt') document.getElementById('btnSrcUsdt').classList.add('active');
+            if (fuente === 'custom') document.getElementById('btnSrcCustom').classList.add('active');
+
+            // Adaptar interfaz si es Euro o Dólar/USDT
+            adaptarEtiquetasMoneda(fuente);
+
+            aplicarTasaEnPantalla(true);
+        }
+
+        function adaptarEtiquetasMoneda(fuente) {
+            const labelPrice = document.getElementById('labelForeignPrice');
+            const badgeCurr = document.getElementById('badgeForeignCurrency');
+            const labelDisc = document.getElementById('labelDiscountForeign');
+            const labelTotal = document.getElementById('labelTotalForeign');
+            const svgIcon = document.getElementById('foreignCurrencySvg');
+
+            if (fuente === 'eur') {
+                labelPrice.textContent = 'Precio EUR';
+                badgeCurr.textContent = '€ EUR';
+                badgeCurr.style.background = 'rgba(56, 189, 248, 0.16)';
+                badgeCurr.style.color = '#38bdf8';
+                labelDisc.textContent = 'Ahorro Descuento (€)';
+                labelTotal.textContent = 'Total a Pagar (€)';
+            } else if (fuente === 'usdt') {
+                labelPrice.textContent = 'Precio USDT';
+                badgeCurr.textContent = '₮ USDT';
+                badgeCurr.style.background = 'rgba(245, 158, 11, 0.16)';
+                badgeCurr.style.color = '#fbbf24';
+                labelDisc.textContent = 'Ahorro Descuento (USDT)';
+                labelTotal.textContent = 'Total a Pagar (USDT)';
+            } else {
+                labelPrice.textContent = 'Precio USD';
+                badgeCurr.textContent = '$ USD';
+                badgeCurr.style.background = 'rgba(56, 189, 248, 0.16)';
+                badgeCurr.style.color = '#38bdf8';
+                labelDisc.textContent = 'Ahorro Descuento ($)';
+                labelTotal.textContent = 'Total a Pagar ($)';
+            }
+        }
+
+        function aplicarTasaEnPantalla(animar = true) {
+            const inputTasa = document.getElementById('exchangeRate');
+            const fuenteInfo = ratesCache[fuenteActual] || ratesCache.bcv;
+
+            inputTasa.value = fuenteInfo.valor.toFixed(2);
+
+            // Metadatos debajo del input
+            const rateSourceText = document.getElementById('rateSourceText');
+            const rateDateText = document.getElementById('rateDateText');
+
+            if (fuenteActual === 'bcv') {
+                rateSourceText.innerHTML = 'Fuente: <b>Banco Central de Venezuela (BCV Oficial)</b>';
+                rateDateText.textContent = fuenteInfo.fecha || 'Oficial';
+            } else if (fuenteActual === 'eur') {
+                rateSourceText.innerHTML = 'Fuente: <b>Euro BCV Oficial</b>';
+                rateDateText.textContent = fuenteInfo.fecha || 'Oficial';
+            } else if (fuenteActual === 'paralelo') {
+                rateSourceText.innerHTML = 'Fuente: <b>Dólar Paralelo (EnParaleloVzla)</b>';
+                rateDateText.textContent = fuenteInfo.fecha || 'Monitor';
+            } else if (fuenteActual === 'usdt') {
+                rateSourceText.innerHTML = 'Fuente: <b>Binance P2P Venezuela (CriptoYa)</b>';
+                rateDateText.textContent = fuenteInfo.fecha || 'En vivo';
+            } else {
+                rateSourceText.innerHTML = 'Fuente: <b>Tasa Libre / Personalizada</b>';
+                rateDateText.textContent = 'Manual';
+            }
+
+            // Recalcular montos
+            convertirMoneda('usd');
+            calcular(animar);
+        }
+
+        function marcarComoPersonalizadaSiEdita() {
+            if (fuenteActual !== 'custom') {
+                fuenteActual = 'custom';
+                document.querySelectorAll('.source-pill').forEach(btn => btn.classList.remove('active'));
+                document.getElementById('btnSrcCustom').classList.add('active');
+                document.getElementById('rateSourceText').innerHTML = 'Fuente: <b>Tasa Personalizada (Manual)</b>';
+                document.getElementById('rateDateText').textContent = 'Manual';
+            }
+            ratesCache.custom.valor = parseFloat(document.getElementById('exchangeRate').value) || 0;
+            guardarTasasEnStorage();
+        }
+
+        // ==========================================
+        // 3. LÓGICA DE CÁLCULO Y MONEDAS
+        // ==========================================
+        let lastCalculation = null;
+
+        function vibrar(ms = 15) {
+            if (navigator.vibrate) {
+                try { navigator.vibrate(ms); } catch (e) {}
+            }
+        }
+
+        function convertirMoneda(origen) {
+            const tasa = parseFloat(document.getElementById('exchangeRate').value) || 0;
+            const inputUSD = document.getElementById('priceUSD');
+            const inputBS = document.getElementById('priceBS');
+
+            if (tasa <= 0) return;
+
+            if (origen === 'usd') {
+                const usdVal = parseFloat(inputUSD.value);
+                if (!isNaN(usdVal) && usdVal >= 0) {
+                    inputBS.value = (usdVal * tasa).toFixed(2);
+                } else {
+                    inputBS.value = "";
+                }
+            } else if (origen === 'bs') {
+                const bsVal = parseFloat(inputBS.value);
+                if (!isNaN(bsVal) && bsVal >= 0) {
+                    inputUSD.value = (bsVal / tasa).toFixed(2);
+                } else {
+                    inputUSD.value = "";
+                }
+            }
+
+            calcular(false);
+        }
+
+        function seleccionarChip(valor) {
+            vibrar(12);
+            document.getElementById('discount').value = valor;
+            actualizarChips();
+            calcular(true);
+        }
+
+        function actualizarChips() {
+            const val = parseFloat(document.getElementById('discount').value);
+            document.querySelectorAll('.chip').forEach(btn => {
+                const chipVal = parseFloat(btn.textContent.replace('%', ''));
+                if (chipVal === val) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function formatearMoneda(numero, simbolo = '') {
+            return (simbolo ? simbolo + ' ' : '') + numero.toLocaleString('es-VE', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function calcular(animar = false) {
+            const precioUSD = parseFloat(document.getElementById('priceUSD').value) || 0;
+            const precioBS = parseFloat(document.getElementById('priceBS').value) || 0;
+            const porcentaje = parseFloat(document.getElementById('discount').value) || 0;
+            const tasa = parseFloat(document.getElementById('exchangeRate').value) || 0;
+
+            const simboloMoneda = (fuenteActual === 'eur') ? '€' : ((fuenteActual === 'usdt') ? 'USDT' : '$');
+            document.getElementById('calcSummaryLabel').textContent = `${ratesCache[fuenteActual]?.nombre || 'Tasa'} · ${tasa.toFixed(2)}`;
+
+            if (tasa <= 0) {
+                resetearResultados();
+                return null;
+            }
+
+            if (precioUSD < 0 || precioBS < 0 || porcentaje < 0 || porcentaje > 100) {
+                resetearResultados();
+                return null;
+            }
+
+            const montoDescuentoUSD = (precioUSD * porcentaje) / 100;
+            const totalPagarUSD = precioUSD - montoDescuentoUSD;
+            const montoDescuentoBS = (precioBS * porcentaje) / 100;
+            const totalPagarBS = precioBS - montoDescuentoBS;
+
+            actualizarTextoValor('discountAmountUSD', `${simboloMoneda}${montoDescuentoUSD.toFixed(2)}`, animar);
+            actualizarTextoValor('totalAmountUSD', `${simboloMoneda}${totalPagarUSD.toFixed(2)}`, animar);
+            actualizarTextoValor('discountAmountBS', `${formatearMoneda(montoDescuentoBS)} Bs`, animar);
+            actualizarTextoValor('totalAmountBS', `${formatearMoneda(totalPagarBS)} Bs`, animar);
+
+            lastCalculation = {
+                fecha: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                fuente: fuenteActual,
+                nombreFuente: ratesCache[fuenteActual]?.nombre || 'Personalizada',
+                simboloMoneda,
+                precioUSD, precioBS, porcentaje, tasa,
+                montoDescuentoUSD, totalPagarUSD,
+                montoDescuentoBS, totalPagarBS
+            };
+
+            return lastCalculation;
+        }
+
+        function actualizarTextoValor(id, valor, animar) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = valor;
+            if (animar) {
+                el.style.transform = 'scale(1.08)';
+                setTimeout(() => { el.style.transform = 'scale(1)'; }, 180);
+            }
+        }
+
+        function resetearResultados() {
+            const simbolo = (fuenteActual === 'eur') ? '€' : ((fuenteActual === 'usdt') ? 'USDT ' : '$');
+            document.getElementById('discountAmountUSD').textContent = `${simbolo}0.00`;
+            document.getElementById('totalAmountUSD').textContent = `${simbolo}0.00`;
+            document.getElementById('discountAmountBS').textContent = '0.00 Bs';
+            document.getElementById('totalAmountBS').textContent = '0.00 Bs';
+        }
+
+        function guardarYCalcular() {
+            vibrar(20);
+            const res = calcular(true);
+            if (!res || res.totalPagarUSD <= 0) {
+                mostrarToast('⚠️ Ingresa un precio válido', 'error');
+                return;
+            }
+
+            guardarEnHistorial(res);
+            mostrarToast('✅ Cálculo guardado exitosamente', 'success');
+        }
+
+        function limpiarCampos() {
+            vibrar(15);
+            document.getElementById('priceUSD').value = '';
+            document.getElementById('priceBS').value = '';
+            document.getElementById('discount').value = '27';
+            actualizarChips();
+            resetearResultados();
+            mostrarToast('Campos restablecidos', 'success');
+        }
+
+        // ==========================================
+        // 4. COPIAR MONTO PARA PAGO MÓVIL
+        // ==========================================
+        function copiarMontoBs() {
+            vibrar(25);
+            const el = document.getElementById('totalAmountBS');
+            const textoCompleto = el.textContent || '';
+            const montoLimpio = textoCompleto.replace(' Bs', '').trim();
+
+            if (!montoLimpio || montoLimpio === '0,00' || montoLimpio === '0.00') {
+                mostrarToast('⚠️ Calcula un monto antes de copiar', 'error');
+                return;
+            }
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(montoLimpio).then(() => {
+                    marcarBotonCopiado(montoLimpio);
+                }).catch(() => {
+                    copiarFallback(montoLimpio);
+                });
+            } else {
+                copiarFallback(montoLimpio);
+            }
+        }
+
+        function marcarBotonCopiado(monto) {
+            const btn = document.getElementById('btnCopyBs');
+            const txt = document.getElementById('copyBtnText');
+            btn.classList.add('copied');
+            txt.textContent = '¡Copiado!';
+            mostrarToast(`📋 Monto copiado para Pago Móvil: ${monto} Bs`, 'success');
+
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                txt.textContent = 'Copiar';
+            }, 2000);
+        }
+
+        function copiarFallback(texto) {
+            const ta = document.createElement('textarea');
+            ta.value = texto;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                marcarBotonCopiado(texto);
+            } catch (err) {
+                mostrarToast('No se pudo copiar automáticamente', 'error');
+            }
+            document.body.removeChild(ta);
+        }
+
+        // ==========================================
+        // 5. COMPARTIR RESULTADO
+        // ==========================================
+        function compartirResultado() {
+            vibrar(15);
+            if (!lastCalculation || lastCalculation.totalPagarUSD <= 0) {
+                mostrarToast('⚠️ Realiza un cálculo antes de compartir', 'error');
+                return;
+            }
+
+            const c = lastCalculation;
+            const texto = `🧮 *Calculadora Lr Premium*\n\n` +
+                `💵 *Precio:* ${c.simboloMoneda}${c.precioUSD.toFixed(2)} (${formatearMoneda(c.precioBS)} Bs)\n` +
+                `🎯 *Descuento:* ${c.porcentaje}%\n` +
+                `💸 *Ahorras:* ${c.simboloMoneda}${c.montoDescuentoUSD.toFixed(2)} (${formatearMoneda(c.montoDescuentoBS)} Bs)\n` +
+                `✅ *Total a Pagar:* ${c.simboloMoneda}${c.totalPagarUSD.toFixed(2)} (${formatearMoneda(c.totalPagarBS)} Bs)\n` +
+                `💱 *Tasa ${c.nombreFuente}:* ${c.tasa.toFixed(2)} Bs\n\n` +
+                `⚡ _Calculadora Lr Multimoneda · BCV Online & Offline_`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Cálculo de Descuento - Calculadora Lr',
+                    text: texto
+                }).catch(() => {});
+            } else {
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(texto).then(() => {
+                        mostrarToast('📋 Resumen copiado para WhatsApp', 'success');
+                    });
+                }
+            }
+        }
+
+        // ==========================================
+        // 6. HISTORIAL LOCAL (LocalStorage)
+        // ==========================================
+        const HISTORY_KEY = 'lr_calc_history_v1';
+
+        function obtenerHistorial() {
+            try {
+                return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function guardarEnHistorial(item) {
+            const hist = obtenerHistorial();
+            hist.unshift(item);
+            if (hist.length > 15) hist.pop();
+            try {
+                localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
+            } catch (e) {}
+        }
+
+        function abrirHistorial() {
+            vibrar(15);
+            renderizarHistorial();
+            document.getElementById('historyModal').classList.add('open');
+        }
+
+        function cerrarHistorial() {
+            document.getElementById('historyModal').classList.remove('open');
+        }
+
+        function renderizarHistorial() {
+            const lista = document.getElementById('historyList');
+            const data = obtenerHistorial();
+
+            if (data.length === 0) {
+                lista.innerHTML = '<div class="empty-history">No tienes cálculos guardados todavía.</div>';
+                return;
+            }
+
+            lista.innerHTML = data.map((it, idx) => `
+                <div class="history-card" onclick="cargarHistorial(${idx})">
+                    <div>
+                        <div style="font-weight: 700; font-size: 13px;">${it.simboloMoneda || '$'}${it.precioUSD.toFixed(2)} con ${it.porcentaje}% OFF</div>
+                        <div class="history-calc">${it.fecha} · ${it.nombreFuente || 'Tasa'}: ${it.tasa.toFixed(2)} Bs</div>
+                    </div>
+                    <div>
+                        <div class="history-total">${it.simboloMoneda || '$'}${it.totalPagarUSD.toFixed(2)}</div>
+                        <div style="font-size: 11px; color: var(--text-muted); text-align: right;">${formatearMoneda(it.totalPagarBS)} Bs</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function cargarHistorial(index) {
+            const data = obtenerHistorial();
+            const it = data[index];
+            if (!it) return;
+
+            if (it.fuente) {
+                cambiarFuenteTasa(it.fuente);
+            }
+            document.getElementById('exchangeRate').value = it.tasa;
+            document.getElementById('priceUSD').value = it.precioUSD;
+            document.getElementById('priceBS').value = it.precioBS;
+            document.getElementById('discount').value = it.porcentaje;
+
+            actualizarChips();
+            calcular(true);
+            cerrarHistorial();
+            mostrarToast('Cálculo recuperado', 'success');
+        }
+
+        function borrarHistorial() {
+            vibrar(30);
+            localStorage.removeItem(HISTORY_KEY);
+            renderizarHistorial();
+            mostrarToast('Historial vaciado', 'success');
+        }
+
+        function abrirModalAyuda() {
+            vibrar(15);
+            document.getElementById('helpModal').classList.add('open');
+        }
+
+        function cerrarModalAyuda() {
+            document.getElementById('helpModal').classList.remove('open');
+        }
+
+        function abrirModalAutor() {
+            vibrar(15);
+            document.getElementById('authorModal').classList.add('open');
+        }
+
+        function cerrarModalAutor() {
+            document.getElementById('authorModal').classList.remove('open');
+        }
+
+        function abrirModalPrivacidad() {
+            vibrar(15);
+            cerrarModalAutor();
+            document.getElementById('privacyModal').classList.add('open');
+        }
+
+        function cerrarModalPrivacidad() {
+            document.getElementById('privacyModal').classList.remove('open');
+        }
+
+        function cerrarModalSiFuera(e, id) {
+            if (e.target.id === id) {
+                document.getElementById(id).classList.remove('open');
+            }
+        }
+
+        // ==========================================
+        // 7. SISTEMA DE TEMAS (Modo Oscuro / Claro)
+        // ==========================================
+        function aplicarTema(tema) {
+            document.documentElement.setAttribute('data-theme', tema);
+            try {
+                localStorage.setItem('calculave_theme', tema);
+            } catch(e) {}
+            const metaTheme = document.querySelector('meta[name="theme-color"]');
+            if (metaTheme) {
+                metaTheme.setAttribute('content', tema === 'light' ? '#f8fafc' : '#0a0e1a');
+            }
+            const iconSun = document.getElementById('themeIconSun');
+            const iconMoon = document.getElementById('themeIconMoon');
+            const btnToggle = document.getElementById('btnThemeToggle');
+            if (iconSun && iconMoon) {
+                if (tema === 'light') {
+                    iconSun.style.display = 'none';
+                    iconMoon.style.display = 'block';
+                    if (btnToggle) {
+                        btnToggle.title = 'Cambiar a Modo Oscuro';
+                        btnToggle.setAttribute('aria-label', 'Cambiar a Modo Oscuro');
+                    }
+                } else {
+                    iconSun.style.display = 'block';
+                    iconMoon.style.display = 'none';
+                    if (btnToggle) {
+                        btnToggle.title = 'Cambiar a Modo Claro';
+                        btnToggle.setAttribute('aria-label', 'Cambiar a Modo Claro');
+                    }
+                }
+            }
+        }
+
+        function alternarTema() {
+            vibrar(15);
+            const temaActual = document.documentElement.getAttribute('data-theme') || 'dark';
+            const nuevoTema = temaActual === 'light' ? 'dark' : 'light';
+            aplicarTema(nuevoTema);
+            mostrarToast(nuevoTema === 'light' ? '☀️ Modo Claro activado' : '🌙 Modo Oscuro activado', 'info');
+        }
+
+        // ==========================================
+        // 8. TOAST GLOBAL
+        // ==========================================
+        let toastTimeout;
+        function mostrarToast(mensaje, tipo = 'success') {
+            const toast = document.getElementById('toastBox');
+            const txt = document.getElementById('toastText');
+            txt.textContent = mensaje;
+
+            toast.className = `toast toast-${tipo} show`;
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2800);
+        }
+
+        // ==========================================
+        // 9. REGISTRO PWA & EVENTOS DE INSTALACIÓN
+        // ==========================================
+        let deferredPrompt = null;
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(() => console.log('SW activo y caché offline lista'))
+                    .catch((err) => console.warn('SW no disponible:', err));
+            });
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const banner = document.getElementById('installBanner');
+            if (banner) banner.classList.add('show');
+        });
+
+        function instalarApp() {
+            vibrar(20);
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        mostrarToast('🎉 ¡CalculaVE instalada en tu dispositivo!', 'success');
+                    }
+                    deferredPrompt = null;
+                    document.getElementById('installBanner').classList.remove('show');
+                });
+            } else {
+                abrirModalAyuda();
+            }
+        }
+
+        // Inicialización al cargar la página
+        window.addEventListener('DOMContentLoaded', () => {
+            // Sincronizar iconos del tema
+            const temaActual = document.documentElement.getAttribute('data-theme') || 'dark';
+            aplicarTema(temaActual);
+
+            const esStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            if (esStandalone) {
+                document.getElementById('pwaStatusText').textContent = 'App Instalada';
+                const banner = document.getElementById('installBanner');
+                if (banner) banner.style.display = 'none';
+            }
+
+            cargarTasasDesdeStorage();
+
+            // Valores por defecto
+            document.getElementById('priceUSD').value = '100';
+            document.getElementById('discount').value = '27';
+            actualizarChips();
+
+            // Sincronización en vivo silenciosa si hay conexión
+            sincronizarTasasOnline(false);
+
+            // Escuchar cambios de conectividad
+            window.addEventListener('online', () => {
+                sincronizarTasasOnline(true);
+            });
+            window.addEventListener('offline', () => {
+                document.getElementById('statusPulseDot').style.background = '#f59e0b';
+                document.getElementById('pwaStatusText').textContent = 'Offline (Caché)';
+                mostrarToast('📡 Modo avión / Sin internet: utilizando caché local', 'info');
+            });
+
+            // Atajo de teclado Enter
+            document.querySelectorAll('.input-field').forEach(input => {
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.target.blur();
+                        guardarYCalcular();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

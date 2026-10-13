@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Calculadora Lr Premium</title>
+
+    <!-- Meta etiquetas para PWA -->
+    <meta name="theme-color" content="#0a0e1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Calculadora Lr">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    
+    <!-- Iconos Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Particles.js para efecto de fondo -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #34d399;
+            --surface: rgba(255, 255, 255, 0.03);
+            --surface-hover: rgba(255, 255, 255, 0.06);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+            --transition: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 50%, #0f172a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Contenedor principal con glassmorphism mejorado */
+        .calculator {
+            position: relative;
+            z-index: 1;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(24px) saturate(180%);
+            border-radius: 28px;
+            padding: 28px;
+            max-width: 420px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transition: all 0.4s var(--transition);
+            animation: slideUp 0.6s var(--transition);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .calculator:hover {
+            box-shadow: var(--shadow-lg), 0 0 40px rgba(16, 185, 129, 0.1);
+        }
+
+        /* Header premium */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 2px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-container {
+            position: relative;
+        }
+
+        .icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s var(--transition);
+        }
+
+        .icon-pulse {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 42px;
+            height: 42px;
+            background: var(--primary);
+            border-radius: 14px;
+            animation: pulse 2s infinite;
+            z-index: 0;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.3);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.5;
+            }
+        }
+
+        .header-title h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .header-title h1 .highlight {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+        }
+
+        .header-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary-light);
+            letter-spacing: 0.5px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+        }
+
+        /* Campos de entrada mejorados */
+        .field-group {
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .field-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .badge {
+            font-size: 10px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-usd {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+        }
+
+        .badge-bs {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.3s var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .field-input:hover {
+            background: var(--surface-hover);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .field-input:focus {
+            border-color: var(--primary);
+            background: rgba(16, 185, 129, 0.05);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .field-input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* Efecto shimmer en input */
+        .input-shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .input-shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            100% { left: 100%; }
+        }
+
+        .field-dual {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        /* Rate field premium */
+        .rate-field {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(5, 150, 105, 0.04));
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(16, 185, 129, 0.12);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rate-field::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Resultados con animación */
+        .results {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        .results-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .results-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.3s var(--transition);
+        }
+
+        .result-row:hover {
+            background: rgba(255, 255, 255, 0.02);
+            padding-left: 8px;
+            padding-right: 8px;
+            border-radius: 8px;
+        }
+
+        .value {
+            font-weight: 700;
+            font-size: 15px;
+            transition: all 0.3s var(--transition);
+        }
+
+        .value-highlight {
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+            padding: 4px 12px;
+            border-radius: 8px;
+        }
+
+        .value-total {
+            color: var(--primary-light);
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .value-animate {
+            animation: valueChange 0.4s var(--transition);
+        }
+
+        @keyframes valueChange {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); color: var(--primary); }
+            100% { transform: scale(1); }
+        }
+
+        .result-row-total {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(5, 150, 105, 0.04));
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-top: 12px;
+            border: 1px solid rgba(16, 185, 129, 0.15);
+        }
+
+        /* Botón copiar mejorado */
+        .copy-btn {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: var(--primary-light);
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover {
+            background: rgba(16, 185, 129, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        .copy-btn.copied {
+            background: rgba(16, 185, 129, 0.3);
+            border-color: var(--primary);
+        }
+
+        /* Botones de acción premium */
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-primary:active::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-secondary {
+            background: var(--surface-hover);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Footer premium */
+        .footer {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .brand-text {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .brand-gradient {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-tagline {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .footer-tagline span {
+            color: var(--primary-light);
+        }
+
+        /* Toast mejorado */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 350px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-success {
+            background: rgba(16, 185, 129, 0.95);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .toast-error {
+            background: rgba(239, 68, 68, 0.95);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .toast-info {
+            background: rgba(59, 130, 246, 0.95);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        /* Herramienta tooltip */
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 6px 12px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            font-size: 11px;
+            border-radius: 8px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover::before {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .calculator {
+                padding: 20px;
+                border-radius: 24px;
+            }
+            
+            .field-dual {
+                gap: 10px;
+            }
+            
+            .btn {
+                padding: 12px 16px;
+                font-size: 13px;
+            }
+            
+            .value-total {
+                font-size: 18px;
+            }
+        }
+
+        /* Animación de entrada escalonada */
+        .stagger-animation > * {
+            opacity: 0;
+            animation: fadeInUp 0.5s var(--transition) forwards;
+        }
+
+        .stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+        .stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+        .stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+        .stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Partículas de fondo -->
+    <div id="particles-js"></div>
+
+    <!-- Calculadora -->
+    <div class="calculator">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">
+                <div class="icon-container">
+                    <div class="icon-pulse"></div>
+                    <div class="icon">🧮</div>
+                </div>
+                <h1>
+                    Calculadora <span class="highlight">Lr</span>
+                </h1>
+            </div>
+            <div class="header-badge">
+                <span class="status-dot"></span>
+                Premium
+            </div>
+        </div>
+
+        <!-- Contenido principal con animación escalonada -->
+        <div class="stagger-animation">
+            <!-- Tasa de Cambio -->
+            <div class="rate-field">
+                <div class="field-group">
+                    <div class="field-label">
+                        <span>💱 Tasa de Cambio</span>
+                        <span class="badge badge-bs">USD → Bs</span>
+                    </div>
+                    <div class="input-shimmer">
+                        <input type="number" class="field-input" id="exchangeRate" value="650" min="0.01" step="0.01" 
+                               placeholder="Ej: 650" oninput="calcular()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Precios -->
+            <div class="field-dual">
+                <div class="field-group">
+                    <div class="field-label">
+                        <span>💰 Precio</span>
+                        <span class="badge badge-usd">USD $</span>
+                    </div>
+                    <input type="number" class="field-input" id="priceUSD" placeholder="0.00" min="0" step="0.01"
+                           oninput="convertirMoneda('usd')">
+                </div>
+                <div class="field-group">
+                    <div class="field-label">
+                        <span>💰 Precio</span>
+                        <span class="badge badge-bs">Bs</span>
+                    </div>
+                    <input type="number" class="field-input" id="priceBS" placeholder="0.00" min="0" step="0.01"
+                           oninput="convertirMoneda('bs')">
+                </div>
+            </div>
+
+            <!-- Descuento -->
+            <div class="field-group" style="margin-top: 16px;">
+                <div class="field-label">
+                    <span>🎯 Descuento</span>
+                    <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">%</span>
+                </div>
+                <input type="number" class="field-input" id="discount" placeholder="27" min="0" max="100" step="0.1"
+                       oninput="calcular()">
+            </div>
+
+            <!-- Resultados -->
+            <div class="results" id="resultsSection">
+                <div class="results-title">
+                    📊 Resultados
+                </div>
+                
+                <!-- USD -->
+                <div class="result-row">
+                    <span>Descuento USD</span>
+                    <span class="value value-highlight" id="discountAmountUSD">$0.00</span>
+                </div>
+                <div class="result-row">
+                    <span>Total USD</span>
+                    <span class="value value-total" id="totalAmountUSD">$0.00</span>
+                </div>
+
+                <hr style="border: none; border-top: 1px dashed rgba(255,255,255,0.1); margin: 12px 0;">
+
+                <!-- Bs -->
+                <div class="result-row">
+                    <span>Descuento Bs</span>
+                    <span class="value value-highlight" id="discountAmountBS">0.00 Bs</span>
+                </div>
+                <div class="result-row-total" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 700; color: #94a3b8;">Total Bs</span>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="value value-total" id="totalAmountBS">0.00 Bs</span>
+                        <button class="copy-btn tooltip" data-tooltip="Copiar para pago móvil" onclick="copiarMontoBs()">
+                            <i data-lucide="copy" style="width: 14px; height: 14px;"></i>
+                            Copiar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="actions">
+                <button class="btn btn-primary" onclick="calcular()">
+                    <i data-lucide="calculator" style="width: 18px; height: 18px;"></i>
+                    Calcular
+                </button>
+                <button class="btn btn-secondary tooltip" data-tooltip="Compartir resultado" onclick="compartir()">
+                    <i data-lucide="share-2" style="width: 18px; height: 18px;"></i>
+                </button>
+            </div>
+
+            <!-- Footer Premium -->
+            <div class="footer">
+                <div class="footer-brand">
+                    <div class="brand-icon">⚡</div>
+                    <div class="brand-text">
+                        <span class="brand-gradient">Calculadora</span> Lr
+                    </div>
+                </div>
+                <div class="footer-tagline">
+                    Diseñado con ❤️ por <span>By Lr</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast mejorado -->
+    <div class="toast" id="toast">
+        <i data-lucide="check-circle" style="width: 20px; height: 20px;"></i>
+        <span id="toast-message"></span>
+    </div>
+
+    <script>
+        // ===== CONFIGURACIÓN DE PARTÍCULAS =====
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 50, density: { enable: true, value_area: 800 } },
+                color: { value: '#10b981' },
+                shape: { type: 'circle' },
+                opacity: { value: 0.15, random: true },
+                size: { value: 3, random: true },
+                line_linked: { enable: true, distance: 150, color: '#10b981', opacity: 0.1, width: 1 },
+                move: { enable: true, speed: 1, direction: 'none', random: true, straight: false, out_mode: 'out' }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: { onhover: { enable: true, mode: 'grab' }, onclick: { enable: true, mode: 'push' } },
+                modes: { grab: { distance: 140, line_linked: { opacity: 0.3 } } }
+            },
+            retina_detect: true
+        });
+
+        // ===== FUNCIONES PRINCIPALES =====
+        let lastResults = null;
+
+        function convertirMoneda(origen) {
+            const tasa = parseFloat(document.getElementById('exchangeRate').value) || 0;
+            const inputUSD = document.getElementById('priceUSD');
+            const inputBS = document.getElementById('priceBS');
+
+            if (tasa <= 0) return;
+
+            if (origen === 'usd') {
+                const usdVal = parseFloat(inputUSD.value);
+                if (!isNaN(usdVal) && usdVal >= 0) {
+                    inputBS.value = (usdVal * tasa).toFixed(2);
+                } else {
+                    inputBS.value = "";
+                }
+            } else if (origen === 'bs') {
+                const bsVal = parseFloat(inputBS.value);
+                if (!isNaN(bsVal) && bsVal >= 0) {
+                    inputUSD.value = (bsVal / tasa).toFixed(2);
+                } else {
+                    inputUSD.value = "";
+                }
+            }
+
+            calcular();
+        }
+
+        function calcular() {
+            const precioUSD = parseFloat(document.getElementById('priceUSD').value) || 0;
+            const precioBS = parseFloat(document.getElementById('priceBS').value) || 0;
+            const porcentaje = parseFloat(document.getElementById('discount').value) || 0;
+            const tasa = parseFloat(document.getElementById('exchangeRate').value) || 0;
+
+            if (tasa <= 0) {
+                mostrarToast('⚠️ Ingresa una tasa de cambio válida', 'error');
+                resetearResultados();
+                return;
+            }
+
+            if (precioUSD < 0 || precioBS < 0 || porcentaje < 0 || porcentaje > 100) {
+                resetearResultados();
+                return;
+            }
+
+            const montoDescuentoUSD = (precioUSD * porcentaje) / 100;
+            const totalPagarUSD = precioUSD - montoDescuentoUSD;
+            const montoDescuentoBS = (precioBS * porcentaje) / 100;
+            const totalPagarBS = precioBS - montoDescuentoBS;
+
+            // Animar valores
+            animarValor('discountAmountUSD', `$${montoDescuentoUSD.toFixed(2)}`);
+            animarValor('totalAmountUSD', `$${totalPagarUSD.toFixed(2)}`);
+            animarValor('discountAmountBS', `${montoDescuentoBS.toFixed(2)} Bs`);
+            animarValor('totalAmountBS', `${totalPagarBS.toFixed(2)} Bs`);
+
+            lastResults = {
+                precioUSD, precioBS, porcentaje,
+                montoDescuentoUSD, totalPagarUSD,
+                montoDescuentoBS, totalPagarBS
+            };
+        }
+
+        function animarValor(id, valor) {
+            const elemento = document.getElementById(id);
+            elemento.textContent = valor;
+            elemento.classList.remove('value-animate');
+            void elemento.offsetWidth;
+            elemento.classList.add('value-animate');
+        }
+
+        function resetearResultados() {
+            document.getElementById('discountAmountUSD').textContent = '$0.00';
+            document.getElementById('totalAmountUSD').textContent = '$0.00';
+            document.getElementById('discountAmountBS').textContent = '0.00 Bs';
+            document.getElementById('totalAmountBS').textContent = '0.00 Bs';
+        }
+
+        // ===== COPIAR MONTO BS =====
+        function copiarMontoBs() {
+            const totalBS = document.getElementById('totalAmountBS').textContent;
+            if (!totalBS || totalBS === '0.00 Bs') {
+                mostrarToast('⚠️ Calcula un descuento primero', 'error');
+                return;
+            }
+
+            const texto = totalBS.replace(' Bs', '').trim();
+            const copyBtn = document.querySelector('.copy-btn');
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(texto).then(() => {
+                    copyBtn.classList.add('copied');
+                    copyBtn.innerHTML = '<i data-lucide="check" style="width: 14px; height: 14px;"></i> ¡Copiado!';
+                    mostrarToast('✅ Monto copiado: ' + texto + ' Bs', 'success');
+                    
+                    setTimeout(() => {
+                        copyBtn.classList.remove('copied');
+                        copyBtn.innerHTML = '<i data-lucide="copy" style="width: 14px; height: 14px;"></i> Copiar';
+                        lucide.createIcons();
+                    }, 2000);
+                }).catch(() => {
+                    copiarTextoFallback(texto);
+                });
+            } else {
+                copiarTextoFallback(texto);
+            }
+        }
+
+        function copiarTextoFallback(texto) {
+            const textarea = document.createElement('textarea');
+            textarea.value = texto;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                mostrarToast('✅ Monto copiado: ' + texto + ' Bs', 'success');
+            } catch (e) {
+                mostrarToast('⚠️ No se pudo copiar', 'error');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // ===== COMPARTIR =====
+        function compartir() {
+            if (!lastResults || lastResults.totalPagarUSD === 0) {
+                mostrarToast('⚠️ Calcula un descuento primero', 'error');
+                return;
+            }
+
+            const r = lastResults;
+            const mensaje = `🧮 *Calculadora Lr Premium*\n\n` +
+                `💵 Precio: $${r.precioUSD.toFixed(2)} (${r.precioBS.toFixed(2)} Bs)\n` +
+                `🎯 Descuento: ${r.porcentaje}%\n` +
+                `💸 Ahorro: $${r.montoDescuentoUSD.toFixed(2)} (${r.montoDescuentoBS.toFixed(2)} Bs)\n` +
+                `✅ *Total: $${r.totalPagarUSD.toFixed(2)}* (${r.totalPagarBS.toFixed(2)} Bs)\n\n` +
+                `⚡ By Lr · Premium`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Calculadora Lr Premium',
+                    text: mensaje,
+                }).catch(() => {});
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(mensaje).then(() => {
+                    mostrarToast('📋 ¡Copiado al portapapeles!', 'success');
+                }).catch(() => {
+                    copiarTextoFallback(mensaje);
+                });
+            } else {
+                copiarTextoFallback(mensaje);
+            }
+        }
+
+        // ===== TOAST MEJORADO =====
+        function mostrarToast(mensaje, tipo = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            const icon = toast.querySelector('i');
+            
+            toastMessage.textContent = mensaje;
+            toast.className = `toast toast-${tipo}`;
+            
+            // Cambiar icono según tipo
+            if (tipo === 'success') {
+                icon.setAttribute('data-lucide', 'check-circle');
+            } else if (tipo === 'error') {
+                icon.setAttribute('data-lucide', 'alert-circle');
+            } else {
+                icon.setAttribute('data-lucide', 'info');
+            }
+            lucide.createIcons();
+            
+            toast.classList.add('show');
+            
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ===== INICIALIZACIÓN =====
+        window.onload = function() {
+            document.getElementById('priceUSD').value = '100';
+            document.getElementById('priceBS').value = '65000';
+            document.getElementById('discount').value = '27';
+            document.getElementById('exchangeRate').value = '650';
+            
+            lucide.createIcons();
+            setTimeout(calcular, 200);
+            
+            // Efecto de teclado
+            document.querySelectorAll('.field-input').forEach(input => {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        calcular();
+                    }
+                });
+            });
+        };
+    </script>
+</body>
+</html>

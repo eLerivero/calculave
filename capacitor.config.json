@@ -1,0 +1,8 @@
+{
+  "appId": "com.elerivero.calculave",
+  "appName": "CalculaVE",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}

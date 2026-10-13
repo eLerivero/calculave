@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad · CalculaVE</title>
+    <meta name="theme-color" content="#0a0e1a">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-light: #34d399;
+            --bg-base: #0a0e1a;
+            --bg-body-grad: radial-gradient(circle at 50% 0%, #172554 0%, #0a0e1a 70%, #020617 100%);
+            --surface: rgba(255, 255, 255, 0.04);
+            --card-bg: rgba(15, 23, 42, 0.85);
+            --border: rgba(255, 255, 255, 0.09);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --box-bg: rgba(255, 255, 255, 0.03);
+            --box-text: #cbd5e1;
+            --radius: 18px;
+        }
+        [data-theme="light"] {
+            --primary: #059669;
+            --primary-light: #10b981;
+            --bg-base: #f8fafc;
+            --bg-body-grad: radial-gradient(circle at 50% 0%, #e0f2fe 0%, #f1f5f9 60%, #e2e8f0 100%);
+            --surface: rgba(241, 245, 249, 0.85);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --border: rgba(203, 213, 225, 0.85);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --box-bg: rgba(16, 185, 129, 0.07);
+            --box-text: #1e293b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-body-grad);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.65;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        .container {
+            max-width: 720px;
+            width: 100%;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        .header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            margin-bottom: 24px;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--primary-light);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 999px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        h1 { font-size: 26px; margin-bottom: 8px; color: var(--text-primary); }
+        .meta { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+        h2 { font-size: 18px; margin: 24px 0 10px; color: var(--primary-light); }
+        p { margin-bottom: 14px; font-size: 14px; color: var(--text-secondary); }
+        ul { margin: 10px 0 16px 20px; color: var(--text-secondary); font-size: 14px; }
+        li { margin-bottom: 6px; }
+        .box {
+            background: var(--box-bg);
+            border-left: 3px solid var(--primary);
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin: 18px 0;
+            font-size: 13.5px;
+            color: var(--box-text);
+        }
+        .footer {
+            margin-top: 32px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        a { color: var(--primary-light); text-decoration: none; font-weight: 600; }
+        a:hover { text-decoration: underline; }
+    </style>
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('calculave_theme');
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = savedTheme ? savedTheme : (prefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch(e) {}
+        })();
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="badge">POLÍTICA OFICIAL DE PRIVACIDAD</span>
+            <h1>CalculaVE · Calculadora Multimoneda</h1>
+            <div class="meta">
+                <b>Desarrollador y Titular:</b> Luis David Rivero Carmona (@eLerivero)<br>
+                <b>Perfiles Oficiales:</b> <a href="https://github.com/eLerivero" target="_blank" rel="noopener noreferrer">GitHub (@eLerivero)</a> · <a href="https://www.linkedin.com/in/luis-rivero-b88603241/" target="_blank" rel="noopener noreferrer">LinkedIn</a><br>
+                <b>Última actualización:</b> Octubre de 2026 · Versión 1.0.0
+            </div>
+        </div>
+
+        <div class="box">
+            🛡️ <b>Compromiso de Privacidad Total:</b> <strong>CalculaVE</strong> respeta profundamente la privacidad de sus usuarios. Esta aplicación opera bajo la arquitectura <em>Zero-Telemetry / Offline-First</em>: <strong>no recopilamos, no almacenamos, no vendemos ni compartimos ningún dato personal identificable (PII)</strong>.
+        </div>
+
+        <h2>1. Información que NO recopilamos</h2>
+        <p>Al utilizar CalculaVE:</p>
+        <ul>
+            <li><strong>No solicitamos registro ni cuentas de usuario:</strong> No pedimos nombres, correos electrónicos, números telefónicos ni contraseñas.</li>
+            <li><strong>No accedemos a información del dispositivo:</strong> No accedemos a contactos, mensajes, llamadas, cámara, micrófono, galería ni ubicación GPS.</li>
+            <li><strong>No rastreamos identificadores personales:</strong> No recopilamos dirección IP de forma persistente, ni identificadores de publicidad para seguimiento de perfilación.</li>
+        </ul>
+
+        <h2>2. Almacenamiento Local en el Dispositivo (LocalStorage)</h2>
+        <p>
+            Cualquier cálculo realizado, historial numérico o configuración de tasas personalizadas se almacena <strong>estrictamente en la memoria local de tu dispositivo móvil</strong> (mediante LocalStorage). Esta información nunca es transmitida a servidores externos ni compartida con terceros. Tienes el control total para borrar este historial en cualquier momento desde el botón de la papelera dentro de la aplicación o al desinstalar la app.
+        </p>
+
+        <h2>3. Conexión de Red y APIs Externas de Cotización</h2>
+        <p>
+            CalculaVE incluye la función de consultar tasas públicas de referencia venezolanas (Banco Central de Venezuela - BCV, Euro Oficial, Paralelo y Binance P2P USDT).
+        </p>
+        <ul>
+            <li>La app realiza solicitudes HTTPS públicas a endpoints abiertos (como DolarAPI y proveedores de tasas públicas) exclusivamente para consultar el valor numérico de la cotización cambiaria.</li>
+            <li>Estas solicitudes son anónimas y no contienen ningún dato de usuario ni parámetros de seguimiento.</li>
+            <li>Si no cuentas con conexión a internet, la aplicación continuará funcionando al 100% de manera offline con la última tasa guardada o con la tasa manual que definas.</li>
+        </ul>
+
+        <h2>4. Permisos de la Aplicación en Android</h2>
+        <p>
+            CalculaVE solicita únicamente el permiso de red básica (<code>android.permission.INTERNET</code> y <code>ACCESS_NETWORK_STATE</code>) estrictamente para verificar la conectividad y actualizar las tasas públicas. No solicita permisos sensibles ni peligrosos.
+        </p>
+
+        <h2>5. Cumplimiento con Menores y Familias (Google Play Families Policy)</h2>
+        <p>
+            CalculaVE es una herramienta de utilidad matemática apta para todas las edades. Al no recopilar datos personales ni contener contenido para adultos, cumple íntegramente con la directiva de seguridad infantil y la normativa COPPA / GDPR-K.
+        </p>
+
+        <h2>6. Cambios en esta Política</h2>
+        <p>
+            Cualquier actualización a esta política se reflejará en esta página y en las notas de actualización de la versión correspondiente en la Google Play Store.
+        </p>
+
+        <h2>7. Contacto con el Desarrollador</h2>
+        <p>
+            Si tienes dudas, sugerencias o comentarios acerca de esta política de privacidad o sobre el funcionamiento de CalculaVE, puedes comunicarte directamente con el desarrollador:
+        </p>
+        <ul>
+            <li><b>Desarrollador:</b> Luis David Rivero Carmona (@eLerivero)</li>
+            <li><b>GitHub:</b> <a href="https://github.com/eLerivero" target="_blank" rel="noopener noreferrer">https://github.com/eLerivero</a></li>
+            <li><b>LinkedIn:</b> <a href="https://www.linkedin.com/in/luis-rivero-b88603241/" target="_blank" rel="noopener noreferrer">https://www.linkedin.com/in/luis-rivero-b88603241/</a></li>
+            <li><b>Aplicación:</b> CalculaVE (com.elerivero.calculave)</li>
+            <li><b>Ubicación:</b> Venezuela 🇻🇪</li>
+            <li><b>Soporte:</b> Contacto a través de GitHub o la ficha de Google Play Store</li>
+        </ul>
+
+        <div class="footer">
+            © 2026 CalculaVE · Desarrollado por <b>Luis David Rivero Carmona</b> · Todos los derechos reservados.
+        </div>
+    </div>
+</body>
+</html>
