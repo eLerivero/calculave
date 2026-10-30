@@ -9,6 +9,8 @@ Thumbs.db
 
 # Compilación y Artefactos de Android
 android/.gradle/
+android/.idea/
+.idea/
 android/app/build/
 android/build/
 android/local.properties
