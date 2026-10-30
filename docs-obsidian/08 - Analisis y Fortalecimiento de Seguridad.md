@@ -56,10 +56,11 @@ En `android/app/src/main/res/xml/network_security_config.xml`:
 ### C. Política de Seguridad de Contenido Estricta (Content Security Policy)
 En el `<head>` de `index.html`:
 ```html
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://ve.dolarapi.com https://criptoya.com https://open.er-api.com; object-src 'none'; base-uri 'self';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://ve.dolarapi.com https://criptoya.com https://open.er-api.com; frame-src 'none'; media-src 'none'; object-src 'none'; form-action 'none'; base-uri 'self';">
 ```
-- **Anti-XSS y Anti-Exfiltración:** La directiva `connect-src` bloquea cualquier conexión saliente no autorizada. Si algún script intentase exfiltrar datos a un servidor desconocido, el motor web lo bloquea de inmediato.
-- Se prohíben plugins externos (`object-src 'none'`) y se restringe la base de navegación (`base-uri 'self'`).
+- **Anti-XSS, Anti-Frame & Anti-Exfiltración:** Se eliminaron comodines remotos de `default-src`, restringiéndolo a `'self' data:`. Se añadieron `frame-src 'none'` (anti-clickjacking), `media-src 'none'`, `form-action 'none'`, `object-src 'none'` y `base-uri 'self'`.
+- **Sanitización Dinámica de Historial (DOM Anti-XSS):** Implementación de la función `escapeHTML()` para escapar todo dato antes de inyectarlo en el historial o leerlo de `localStorage`.
+- **Validación Estricta de Tipos en Caché:** Validación numérica y de longitudes en `cargarTasasDesdeStorage()`.
 
 ### D. Eliminación de Logs Sensibles y Ofuscación R8 / ProGuard
 En `android/app/proguard-rules.pro`:
@@ -78,6 +79,21 @@ En `android/app/proguard-rules.pro`:
 ```
 - En `build.gradle`, se cuenta con `minifyEnabled true` y `shrinkResources true`.
 - En el código JavaScript se retiraron los mensajes de depuración en consola para evitar fugas de trazas de red.
+
+### E. Aislamiento de Rutas en FileProvider (`file_paths.xml`)
+En `android/app/src/main/res/xml/file_paths.xml`:
+- Se eliminó la exposición amplia de la raíz de almacenamiento externo (`<external-path path="." />`), reemplazándola por rutas aisladas al sandbox de la aplicación (`<files-path>` y `<cache-path>`), mitigando advertencias en los analizadores de seguridad estáticos de Google Play.
+
+### F. Disponibilidad Offline de la Política de Privacidad (`sw.js`)
+En `sw.js`:
+- Se incorporó `privacy.html` en `ASSETS_TO_CACHE` y se actualizó la versión de caché a `calculave-v1.1`, garantizando que la política de privacidad requerida por Google Play esté disponible de forma ininterrumpida incluso sin conexión a internet.
+
+### G. Preparación para Google Play Store (Android App Bundle `.aab`)
+En `.github/workflows/build-apk.yml` y `android/app/build.gradle`:
+- Se configuró el comando de compilación `./gradlew bundleRelease` y `signingConfigs.release` para generar el paquete oficial en formato **Android App Bundle (.aab)** exigido por Google Play Console, manteniendo `assembleDebug` para pruebas locales.
+
+### H. Cadena de Suministro Limpia (Zero Vulnerabilities)
+- Se actualizaron los paquetes de Capacitor a la versión **7.6.9** y se depuraron las dependencias transitivas de `tar`, alcanzando **0 vulnerabilidades** en `npm audit` (mitigando los CVEs GHSA-34x7-hfp2-rc4v y GHSA-8qq5-rm4j-mr97).
 
 ---
 

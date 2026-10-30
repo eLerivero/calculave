@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 500" width="1024" height="500">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070b14"/>
+      <stop offset="45%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#064e3b"/>
+    </linearGradient>
+
+    <!-- Card Gradient -->
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(30, 41, 59, 0.95)"/>
+      <stop offset="100%" stop-color="rgba(15, 23, 42, 0.90)"/>
+    </linearGradient>
+
+    <!-- Emerald Highlight Gradient -->
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="glowGreen" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="60" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="20" stdDeviation="24" flood-color="#000000" flood-opacity="0.65"/>
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1024" height="500" fill="url(#bgGrad)"/>
+
+  <!-- Subtle Grid Lines / Tech Pattern -->
+  <g opacity="0.06" stroke="#ffffff" stroke-width="1">
+    <line x1="0" y1="100" x2="1024" y2="100"/>
+    <line x1="0" y1="200" x2="1024" y2="200"/>
+    <line x1="0" y1="300" x2="1024" y2="300"/>
+    <line x1="0" y1="400" x2="1024" y2="400"/>
+    <line x1="200" y1="0" x2="200" y2="500"/>
+    <line x1="400" y1="0" x2="400" y2="500"/>
+    <line x1="600" y1="0" x2="600" y2="500"/>
+    <line x1="800" y1="0" x2="800" y2="500"/>
+  </g>
+
+  <!-- Glowing Auras -->
+  <circle cx="850" cy="180" r="180" fill="#10b981" opacity="0.22" filter="url(#glowGreen)"/>
+  <circle cx="150" cy="400" r="140" fill="#0284c7" opacity="0.15" filter="url(#glowGreen)"/>
+
+  <!-- ================= LEFT COLUMN: BRANDING & FEATURES ================= -->
+  <g transform="translate(68, 80)">
+    <!-- Brand Tag -->
+    <rect width="190" height="32" rx="16" fill="rgba(16, 185, 129, 0.15)" stroke="rgba(16, 185, 129, 0.4)" stroke-width="1.5"/>
+    <text x="95" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#34d399" text-anchor="middle" letter-spacing="1">VENEZUELA · OFFLINE FIRST</text>
+
+    <!-- App Name -->
+    <text x="0" y="96" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="64" font-weight="900" fill="#ffffff" letter-spacing="-1">
+      Calcula<tspan fill="#34d399">VE</tspan>
+    </text>
+
+    <!-- Subtitle -->
+    <text x="0" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="600" fill="#94a3b8">
+      Calculadora de Porcentajes, Tasas &amp; IVA
+    </text>
+
+    <!-- Feature Pills -->
+    <g transform="translate(0, 180)">
+      <!-- Pill 1: BCV / Paralelo / USDT -->
+      <g transform="translate(0, 0)">
+        <rect width="168" height="38" rx="12" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1"/>
+        <text x="16" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#f8fafc">🏛️ Tasas en Vivo BCV</text>
+      </g>
+      <!-- Pill 2: USDT & Paralelo -->
+      <g transform="translate(180, 0)">
+        <rect width="176" height="38" rx="12" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1"/>
+        <text x="16" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#f8fafc">🪙 Binance P2P / USDT</text>
+      </g>
+    </g>
+
+    <g transform="translate(0, 230)">
+      <!-- Pill 3: IVA & IGTF -->
+      <g transform="translate(0, 0)">
+        <rect width="168" height="38" rx="12" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1"/>
+        <text x="16" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#f8fafc">🧾 IVA 16% + IGTF 3%</text>
+      </g>
+      <!-- Pill 4: Pago Móvil -->
+      <g transform="translate(180, 0)">
+        <rect width="176" height="38" rx="12" fill="rgba(16, 185, 129, 0.12)" stroke="rgba(16, 185, 129, 0.35)" stroke-width="1"/>
+        <text x="16" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#34d399">📲 Copia Pago Móvil</text>
+      </g>
+    </g>
+
+    <g transform="translate(0, 290)">
+      <text x="0" y="20" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#64748b">
+        ⚡ 100% Sin Conexión · Cero Telemetría · Modo Oscuro y Claro
+      </text>
+    </g>
+  </g>
+
+  <!-- ================= RIGHT COLUMN: APP MOCKUP CARD ================= -->
+  <g transform="translate(610, 50)" filter="url(#cardShadow)">
+    <!-- Phone / Glass Card Frame -->
+    <rect width="345" height="400" rx="28" fill="url(#cardGrad)" stroke="rgba(255, 255, 255, 0.14)" stroke-width="2"/>
+
+    <!-- Header inside Card -->
+    <g transform="translate(24, 22)">
+      <!-- Logo Mini -->
+      <rect width="36" height="36" rx="10" fill="url(#emeraldGrad)"/>
+      <text x="18" y="24" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="900" fill="#ffffff" text-anchor="middle">%</text>
+
+      <text x="48" y="20" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="800" fill="#f8fafc">CalculaVE</text>
+      <text x="48" y="32" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="600" fill="#10b981">Online · BCV Oficial</text>
+
+      <!-- Pill Custom Badge -->
+      <rect x="220" y="4" width="76" height="24" rx="8" fill="rgba(168, 85, 247, 0.2)" stroke="rgba(168, 85, 247, 0.5)"/>
+      <text x="258" y="20" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="700" fill="#c084fc" text-anchor="middle">✏️ Personal</text>
+    </g>
+
+    <!-- Rate Mini Box -->
+    <g transform="translate(24, 76)">
+      <rect width="297" height="64" rx="14" fill="rgba(16, 185, 129, 0.08)" stroke="rgba(16, 185, 129, 0.25)" stroke-width="1.5"/>
+      <text x="16" y="24" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="700" fill="#94a3b8">TASA DE CAMBIO BCV</text>
+      <text x="16" y="50" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="22" font-weight="900" fill="#34d399">875,65 <tspan font-size="13" font-weight="600" fill="#94a3b8">Bs / $</tspan></text>
+      
+      <!-- Pills inside Rate -->
+      <rect x="210" y="16" width="72" height="32" rx="8" fill="rgba(255, 255, 255, 0.06)"/>
+      <text x="246" y="36" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10.5" font-weight="700" fill="#38bdf8" text-anchor="middle">⚡ Sincro</text>
+    </g>
+
+    <!-- Inputs Row Mini -->
+    <g transform="translate(24, 154)">
+      <!-- USD Box -->
+      <rect width="142" height="60" rx="12" fill="rgba(255, 255, 255, 0.03)" stroke="rgba(255, 255, 255, 0.08)"/>
+      <text x="12" y="20" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="600" fill="#64748b">MONTO USD</text>
+      <text x="12" y="46" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="800" fill="#f8fafc">$ 100,00</text>
+
+      <!-- Discount Box -->
+      <g transform="translate(154, 0)">
+        <rect width="143" height="60" rx="12" fill="rgba(255, 255, 255, 0.03)" stroke="rgba(255, 255, 255, 0.08)"/>
+        <text x="12" y="20" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="600" fill="#64748b">DESCUENTO</text>
+        <text x="12" y="46" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="800" fill="#fbbf24">20% OFF</text>
+      </g>
+    </g>
+
+    <!-- Total Display Big Result -->
+    <g transform="translate(24, 228)">
+      <rect width="297" height="96" rx="18" fill="linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(5, 150, 105, 0.08))" stroke="rgba(16, 185, 129, 0.35)" stroke-width="1.5"/>
+      <text x="16" y="28" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" fill="#34d399">TOTAL A PAGAR (BOLÍVARES)</text>
+      <text x="16" y="68" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="30" font-weight="900" fill="#34d399">70.052,00 <tspan font-size="16" font-weight="700" fill="#10b981">Bs</tspan></text>
+      <text x="16" y="86" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" fill="#94a3b8">Equivalente: $80,00 USD (Ahorro: $20,00)</text>
+    </g>
+
+    <!-- Bottom Action Button Mini -->
+    <g transform="translate(24, 336)">
+      <rect width="297" height="42" rx="12" fill="url(#emeraldGrad)"/>
+      <text x="148" y="26" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">
+        📲 Copiar Monto para Pago Móvil
+      </text>
+    </g>
+  </g>
+</svg>
+

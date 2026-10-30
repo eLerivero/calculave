@@ -1,10 +1,11 @@
 // Service Worker para Calculadora Lr Premium
 // Garantiza funcionamiento 100% Offline (Sin CDN ni conexión)
 
-const CACHE_NAME = 'calculadora-lr-v1.0';
+const CACHE_NAME = 'calculave-v1.1';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
+  './privacy.html',
   './manifest.webmanifest',
   './icon.svg',
   './icon-192.png',

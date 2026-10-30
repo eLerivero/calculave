@@ -15,8 +15,8 @@
     <meta name="application-name" content="CalculaVE">
     <meta name="author" content="Luis David Rivero Carmona">
 
-    <!-- Política de Seguridad de Contenido Estricta (Anti-XSS & Anti-Exfiltración) -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://ve.dolarapi.com https://criptoya.com https://open.er-api.com; object-src 'none'; base-uri 'self';">
+    <!-- Política de Seguridad de Contenido Estricta (Anti-XSS, Anti-Clickjacking & Anti-Exfiltración) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://ve.dolarapi.com https://criptoya.com https://open.er-api.com; frame-src 'none'; media-src 'none'; object-src 'none'; form-action 'none'; base-uri 'self';">
 
     <!-- Inicialización Inmediata del Tema y Detección de Instalación (Sin parpadeo) -->
     <script>
@@ -493,6 +493,58 @@
             border-color: rgba(168, 85, 247, 0.45);
         }
 
+        .btn-custom-edit {
+            background: rgba(168, 85, 247, 0.16);
+            border: 1px solid rgba(168, 85, 247, 0.45);
+            color: var(--accent-purple);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: var(--transition);
+        }
+
+        .btn-custom-edit:hover, .btn-custom-edit:active {
+            background: rgba(168, 85, 247, 0.28);
+        }
+
+        .quick-rate-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 9px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        .quick-rate-btn:hover, .quick-rate-btn:active {
+            background: rgba(168, 85, 247, 0.18);
+            border-color: rgba(168, 85, 247, 0.5);
+            color: var(--accent-purple);
+        }
+
+        .pulse-anim {
+            animation: pulseCustom 0.3s ease-in-out;
+        }
+
+        @keyframes pulseCustom {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
         /* Detalle y fecha de la tasa */
         .rate-meta-footer {
             display: flex;
@@ -844,8 +896,18 @@
             letter-spacing: 0.5px;
         }
 
-        .footer-right span {
+        .footer-right span, .footer-right a {
             color: var(--amount-bs);
+            text-decoration: underline;
+            text-underline-offset: 2.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .footer-right a:hover, .footer-right span:hover {
+            color: var(--primary-light);
+            filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.5));
         }
 
         /* Toast de Notificación */
@@ -1118,7 +1180,10 @@
                         </svg>
                         <span>Tasa de Cambio en Vivo</span>
                     </div>
-                    <div class="rate-actions-box">
+                    <div class="rate-actions-box" style="display: flex; align-items: center; gap: 6px;">
+                        <button type="button" class="btn-custom-edit" id="btnEditCustomRate" onclick="abrirModalTasaPersonalizada()" title="Ajustar monto de tasa personalizada" style="display: none;">
+                            ✏️ Ajustar Tasa
+                        </button>
                         <button type="button" class="sync-btn" id="btnSyncRate" onclick="sincronizarTasasOnline(true)" title="Actualizar precio del día online">
                             <svg class="svg-icon" id="syncIconSvg" style="width: 12px; height: 12px;" viewBox="0 0 24 24">
                                 <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-1.19"/>
@@ -1318,7 +1383,7 @@
                     <span>CalculaVE Oficial</span>
                 </div>
                 <div class="footer-right">
-                    100% Offline · <span>Por Luis David Rivero Carmona</span>
+                    100% Offline · <a href="javascript:void(0)" onclick="abrirModalAutor(); event.stopPropagation();" class="footer-author" title="Ver datos sobre el desarrollador">Por @Lr</a>
                 </div>
             </footer>
         </main>
@@ -1355,6 +1420,62 @@
             </div>
             <div class="modal-body" id="historyList">
                 <!-- Tarjetas dinámicas -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Configuración de Tasa Personalizada -->
+    <div class="modal-overlay" id="customRateModal" onclick="cerrarModalSiFuera(event, 'customRateModal')">
+        <div class="modal-sheet">
+            <div class="modal-header">
+                <h3>✏️ Tasa de Cambio Personalizada</h3>
+                <button class="btn-icon-tiny" onclick="cerrarModalTasaPersonalizada()">
+                    <svg class="svg-icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 14px;">
+                    Define tu propia cotización en Bolívares (Bs) por divisa. Esta tasa se guardará en tu dispositivo y se utilizará en todos tus cálculos.
+                </p>
+
+                <div style="margin-bottom: 14px;">
+                    <label for="modalCustomRateInput" style="display: block; font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">
+                        Monto en Bolívares (Bs):
+                    </label>
+                    <div class="input-wrapper">
+                        <div class="input-icon">
+                            <span style="font-weight: 800; font-size: 13px; color: var(--accent-purple);">Bs</span>
+                        </div>
+                        <input type="number" inputmode="decimal" id="modalCustomRateInput" class="input-field" placeholder="Ej: 950.00" min="0.01" step="any" style="border-color: rgba(168, 85, 247, 0.45); font-weight: 700; font-size: 17px;">
+                    </div>
+                </div>
+
+                <!-- Atajos rápidos para comerciantes -->
+                <div style="margin-bottom: 16px;">
+                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+                        Atajos Rápidos (Basados en tasas de hoy)
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+                        <button type="button" class="quick-rate-btn" onclick="aplicarAtajoTasa('bcv')">🏛️ BCV Base</button>
+                        <button type="button" class="quick-rate-btn" onclick="aplicarAtajoTasa('bcv_plus_3')">+3% s/BCV</button>
+                        <button type="button" class="quick-rate-btn" onclick="aplicarAtajoTasa('bcv_plus_5')">+5% s/BCV</button>
+                        <button type="button" class="quick-rate-btn" onclick="aplicarAtajoTasa('bcv_plus_10')">+10% s/BCV</button>
+                        <button type="button" class="quick-rate-btn" onclick="aplicarAtajoTasa('paralelo')">⚡ Paralelo</button>
+                        <button type="button" class="quick-rate-btn" onclick="aplicarAtajoTasa('usdt')">🪙 USDT</button>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn-main" onclick="guardarTasaPersonalizadaDesdeModal()" style="flex: 1; background: linear-gradient(135deg, #a855f7, #7c3aed);">
+                        💾 Guardar y Aplicar
+                    </button>
+                    <button type="button" class="btn-clear" onclick="cerrarModalTasaPersonalizada()" style="padding: 0 16px;">
+                        Cancelar
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1414,7 +1535,7 @@
     <div class="modal-overlay" id="authorModal" onclick="cerrarModalSiFuera(event, 'authorModal')">
         <div class="modal-sheet">
             <div class="modal-header">
-                <h3>👨‍💻 Sobre el Desarrollador</h3>
+                <h3>👨🏾‍💻 Sobre el Desarrollador</h3>
                 <button class="btn-icon-tiny" onclick="cerrarModalAutor()">
                     <svg class="svg-icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24">
                         <line x1="18" y1="6" x2="6" y2="18"/>
@@ -1424,11 +1545,11 @@
             </div>
             <div class="modal-body">
                 <div style="text-align: center; padding: 6px 0 16px;">
-                    <div style="width: 66px; height: 66px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #0284c7); margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 8px 22px rgba(16, 185, 129, 0.45);">
-                        👨‍💻
+                    <div style="width: 66px; height: 66px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #0284c7); margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 8px 22px rgba(16, 185, 129, 0.45);">
+                        👨🏾‍💻
                     </div>
                     <h3 style="font-size: 20px; color: var(--text-primary); margin-bottom: 2px; font-weight: 700;">Luis David Rivero Carmona</h3>
-                    <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;">@eLerivero</div>
+                    <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;">@Lr · @eLerivero</div>
                     <div style="display: inline-block; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: var(--primary-light); padding: 4px 14px; border-radius: 99px; font-size: 11.5px; font-weight: 600;">
                         Creador &amp; Desarrollador Principal 🇻🇪
                     </div>
@@ -1468,11 +1589,80 @@
                     Esta app <b>no recopila, no almacena ni comercializa tus datos personales</b>. Todos tus cálculos y preferencias se guardan de forma segura y aislada en tu propio teléfono.
                 </div>
 
-                <button onclick="abrirModalPrivacidad()" style="width: 100%; margin-top: 8px; background: var(--tip-box-bg); color: var(--accent-blue); border: 1px solid var(--banner-border); padding: 12px; border-radius: 12px; font-weight: 600; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: var(--transition);">
+                <button type="button" onclick="abrirModalDonacion()" style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(16, 185, 129, 0.15)); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: var(--transition);">
+                    ☕ Apoyar a CalculaVE (Donaciones &amp; Cripto)
+                </button>
+
+                <button type="button" onclick="abrirModalPrivacidad()" style="width: 100%; margin-top: 8px; background: var(--tip-box-bg); color: var(--accent-blue); border: 1px solid var(--banner-border); padding: 12px; border-radius: 12px; font-weight: 600; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: var(--transition);">
                     <svg class="svg-icon" style="width: 16px; height: 16px;" viewBox="0 0 24 24">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                     </svg>
                     Ver Política de Privacidad Completa
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Apoyo / Donaciones al Desarrollador -->
+    <div class="modal-overlay" id="donationModal" onclick="cerrarModalSiFuera(event, 'donationModal')">
+        <div class="modal-sheet">
+            <div class="modal-header">
+                <h3>☕ Apoyar a CalculaVE</h3>
+                <button class="btn-icon-tiny" onclick="cerrarModalDonacion()">
+                    <svg class="svg-icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 14px;">
+                    CalculaVE es una herramienta 100% gratuita y sin anuncios invasivos. Si te ha sido útil para tu negocio o compras del día a día, puedes invitarme un café o apoyar el desarrollo continuo:
+                </p>
+
+                <!-- Opción 1: Binance Pay / USDT -->
+                <div class="donation-card" style="background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-weight: 700; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 6px;">
+                            🪙 Binance Pay / USDT (Cripto)
+                        </span>
+                        <button type="button" class="copy-pill-btn" onclick="copiarTexto('ldavidrc07@gmail.com', 'Binance Pay / Correo')">Copiar</button>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">
+                        Binance Pay / Email: <b style="color: var(--text-primary); user-select: all;">ldavidrc07@gmail.com</b>
+                    </div>
+                </div>
+
+                <!-- Opción 2: PayPal -->
+                <div class="donation-card" style="background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-weight: 700; font-size: 13.5px; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
+                            🅿️ PayPal (Internacional)
+                        </span>
+                        <button type="button" class="copy-pill-btn" onclick="copiarTexto('elerivero07@gmail.com', 'Correo PayPal')">Copiar Correo</button>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">
+                        Cuenta PayPal / Email: <b style="color: var(--text-primary); user-select: all;">elerivero07@gmail.com</b>
+                    </div>
+                </div>
+
+                <!-- Opción 3: GitHub Sponsors & Web -->
+                <div class="donation-card" style="background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 14px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-weight: 700; font-size: 13.5px; color: var(--accent-blue); display: flex; align-items: center; gap: 6px;">
+                            💖 GitHub Sponsors &amp; Redes
+                        </span>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
+                        Patrocina el código abierto o deja una estrella en el repositorio oficial.
+                    </div>
+                    <a href="https://github.com/eLerivero/calculave" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; color: var(--primary-light); font-size: 12.5px; font-weight: 700; text-decoration: none;">
+                        ⭐ Ver Repositorio en GitHub &rarr;
+                    </a>
+                </div>
+
+                <button type="button" onclick="cerrarModalDonacion()" class="btn-main" style="width: 100%;">
+                    ¡Muchas Gracias por tu Apoyo!
                 </button>
             </div>
         </div>
@@ -1492,7 +1682,7 @@
             </div>
             <div class="modal-body" style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
                 <div style="background: rgba(16, 185, 129, 0.12); border-left: 3px solid var(--primary); padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; color: var(--text-primary);">
-                    <b>Cero Recopilación de Datos (Zero-PII):</b> CalculaVE no recopila información personal identificable, cookies de rastreo ni identificadores de publicidad.
+                    <b>Compromiso de Privacidad:</b> CalculaVE no recopila información personal identificable. Tus cálculos residen estrictamente en la memoria de tu dispositivo.
                 </div>
 
                 <div style="margin-bottom: 12px;">
@@ -1506,8 +1696,13 @@
                 </div>
 
                 <div style="margin-bottom: 12px;">
-                    <b style="color: var(--text-primary); font-size: 13.5px;">3. Responsable del Desarrollo</b><br>
-                    • <b>Desarrollador:</b> Luis David Rivero Carmona (@eLerivero)<br>
+                    <b style="color: var(--text-primary); font-size: 13.5px;">3. Publicidad Móvil (Google AdMob)</b><br>
+                    Se utiliza Google AdMob para el financiamiento de la aplicación gratuita, el cual puede procesar identificadores anónimos de publicidad móvil (GAID) conforme a las políticas de Google.
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <b style="color: var(--text-primary); font-size: 13.5px;">4. Responsable del Desarrollo</b><br>
+                    • <b>Desarrollador:</b> Luis David Rivero Carmona (@Lr · @eLerivero)<br>
                     • <b>GitHub:</b> <a href="https://github.com/eLerivero" target="_blank" rel="noopener noreferrer" style="color: var(--primary-light);">github.com/eLerivero</a><br>
                     • <b>LinkedIn:</b> <a href="https://www.linkedin.com/in/luis-rivero-b88603241/" target="_blank" rel="noopener noreferrer" style="color: var(--accent-blue);">linkedin.com/in/luis-rivero-b88603241</a><br>
                     • <b>Ubicación:</b> Venezuela 🇻🇪
@@ -1620,12 +1815,30 @@
             custom: { valor: 875.65, fecha: '', nombre: 'Tasa Personalizada' }
         };
 
+        function escapeHTML(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         function cargarTasasDesdeStorage() {
             try {
                 const stored = localStorage.getItem(RATES_STORAGE_KEY);
                 if (stored) {
                     const parsed = JSON.parse(stored);
-                    ratesCache = Object.assign(ratesCache, parsed);
+                    const validKeys = ['bcv', 'eur', 'paralelo', 'usdt', 'custom'];
+                    for (const key of validKeys) {
+                        if (parsed && parsed[key] && typeof parsed[key].valor === 'number' && !isNaN(parsed[key].valor) && parsed[key].valor > 0) {
+                            ratesCache[key].valor = parsed[key].valor;
+                            if (typeof parsed[key].fecha === 'string') {
+                                ratesCache[key].fecha = escapeHTML(parsed[key].fecha.slice(0, 30));
+                            }
+                        }
+                    }
                 }
             } catch (e) {}
         }
@@ -1764,6 +1977,10 @@
             adaptarEtiquetasMoneda(fuente);
 
             aplicarTasaEnPantalla(true);
+
+            if (fuente === 'custom') {
+                abrirModalTasaPersonalizada();
+            }
         }
 
         function adaptarEtiquetasMoneda(fuente) {
@@ -1806,6 +2023,7 @@
             // Metadatos debajo del input
             const rateSourceText = document.getElementById('rateSourceText');
             const rateDateText = document.getElementById('rateDateText');
+            const btnEditCustom = document.getElementById('btnEditCustomRate');
 
             if (fuenteActual === 'bcv') {
                 rateSourceText.innerHTML = 'Fuente: <b>Banco Central de Venezuela (BCV Oficial)</b>';
@@ -1820,8 +2038,12 @@
                 rateSourceText.innerHTML = 'Fuente: <b>Binance P2P Venezuela (CriptoYa)</b>';
                 rateDateText.textContent = fuenteInfo.fecha || 'En vivo';
             } else {
-                rateSourceText.innerHTML = 'Fuente: <b>Tasa Libre / Personalizada</b>';
-                rateDateText.textContent = 'Manual';
+                rateSourceText.innerHTML = 'Fuente: <b>Tasa Personalizada (Manual)</b>';
+                rateDateText.textContent = fuenteInfo.fecha || 'Manual';
+            }
+
+            if (btnEditCustom) {
+                btnEditCustom.style.display = (fuenteActual === 'custom') ? 'inline-flex' : 'none';
             }
 
             // Recalcular montos
@@ -1837,7 +2059,11 @@
                 document.getElementById('rateSourceText').innerHTML = 'Fuente: <b>Tasa Personalizada (Manual)</b>';
                 document.getElementById('rateDateText').textContent = 'Manual';
             }
+            const btnEditCustom = document.getElementById('btnEditCustomRate');
+            if (btnEditCustom) btnEditCustom.style.display = 'inline-flex';
+
             ratesCache.custom.valor = parseFloat(document.getElementById('exchangeRate').value) || 0;
+            ratesCache.custom.fecha = 'Manual';
             guardarTasasEnStorage();
         }
 
@@ -1984,6 +2210,11 @@
             actualizarChips();
             resetearResultados();
             mostrarToast('Campos restablecidos', 'success');
+
+            // Transición natural: evaluar intersticial solo al iniciar nueva operación (nunca sobre resultados de cálculo)
+            if (typeof mostrarIntersticialSiCorresponde === 'function') {
+                mostrarIntersticialSiCorresponde();
+            }
         }
 
         // ==========================================
@@ -2109,23 +2340,34 @@
             const lista = document.getElementById('historyList');
             const data = obtenerHistorial();
 
-            if (data.length === 0) {
+            if (!Array.isArray(data) || data.length === 0) {
                 lista.innerHTML = '<div class="empty-history">No tienes cálculos guardados todavía.</div>';
                 return;
             }
 
-            lista.innerHTML = data.map((it, idx) => `
-                <div class="history-card" onclick="cargarHistorial(${idx})">
+            lista.innerHTML = data.map((it, idx) => {
+                const safeMoneda = escapeHTML(it.simboloMoneda || '$');
+                const safePrecioUSD = (typeof it.precioUSD === 'number' && !isNaN(it.precioUSD)) ? it.precioUSD.toFixed(2) : '0.00';
+                const safePorcentaje = (typeof it.porcentaje === 'number' && !isNaN(it.porcentaje)) ? it.porcentaje : '0';
+                const safeFecha = escapeHTML(it.fecha || '');
+                const safeNombre = escapeHTML(it.nombreFuente || 'Tasa');
+                const safeTasa = (typeof it.tasa === 'number' && !isNaN(it.tasa)) ? it.tasa.toFixed(2) : '0.00';
+                const safeTotalUSD = (typeof it.totalPagarUSD === 'number' && !isNaN(it.totalPagarUSD)) ? it.totalPagarUSD.toFixed(2) : '0.00';
+                const safeTotalBS = (typeof it.totalPagarBS === 'number' && !isNaN(it.totalPagarBS)) ? formatearMoneda(it.totalPagarBS) : '0,00';
+                const safeIdx = parseInt(idx, 10) || 0;
+
+                return `
+                <div class="history-card" onclick="cargarHistorial(${safeIdx})">
                     <div>
-                        <div style="font-weight: 700; font-size: 13px;">${it.simboloMoneda || '$'}${it.precioUSD.toFixed(2)} con ${it.porcentaje}% OFF</div>
-                        <div class="history-calc">${it.fecha} · ${it.nombreFuente || 'Tasa'}: ${it.tasa.toFixed(2)} Bs</div>
+                        <div style="font-weight: 700; font-size: 13px;">${safeMoneda}${safePrecioUSD} con ${safePorcentaje}% OFF</div>
+                        <div class="history-calc">${safeFecha} · ${safeNombre}: ${safeTasa} Bs</div>
                     </div>
                     <div>
-                        <div class="history-total">${it.simboloMoneda || '$'}${it.totalPagarUSD.toFixed(2)}</div>
-                        <div style="font-size: 11px; color: var(--text-muted); text-align: right;">${formatearMoneda(it.totalPagarBS)} Bs</div>
+                        <div class="history-total">${safeMoneda}${safeTotalUSD}</div>
+                        <div style="font-size: 11px; color: var(--text-muted); text-align: right;">${safeTotalBS} Bs</div>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         }
 
         function cargarHistorial(index) {
@@ -2154,6 +2396,68 @@
             mostrarToast('Historial vaciado', 'success');
         }
 
+        // ==========================================
+        // 6. MODAL TASA PERSONALIZADA
+        // ==========================================
+        function abrirModalTasaPersonalizada() {
+            vibrar(15);
+            const inputModal = document.getElementById('modalCustomRateInput');
+            const valorActual = ratesCache.custom.valor || ratesCache.bcv.valor || 0;
+            if (valorActual > 0) {
+                inputModal.value = valorActual.toFixed(2);
+            }
+            document.getElementById('customRateModal').classList.add('open');
+            setTimeout(() => {
+                inputModal.focus();
+                inputModal.select();
+            }, 120);
+        }
+
+        function cerrarModalTasaPersonalizada() {
+            document.getElementById('customRateModal').classList.remove('open');
+        }
+
+        function aplicarAtajoTasa(tipo) {
+            vibrar(15);
+            const input = document.getElementById('modalCustomRateInput');
+            let nuevoValor = 0;
+            const bcv = ratesCache.bcv.valor || 0;
+            if (tipo === 'bcv') nuevoValor = bcv;
+            else if (tipo === 'bcv_plus_3') nuevoValor = bcv * 1.03;
+            else if (tipo === 'bcv_plus_5') nuevoValor = bcv * 1.05;
+            else if (tipo === 'bcv_plus_10') nuevoValor = bcv * 1.10;
+            else if (tipo === 'paralelo') nuevoValor = ratesCache.paralelo.valor || 0;
+            else if (tipo === 'usdt') nuevoValor = ratesCache.usdt.valor || 0;
+
+            if (nuevoValor > 0) {
+                input.value = nuevoValor.toFixed(2);
+                input.classList.add('pulse-anim');
+                setTimeout(() => input.classList.remove('pulse-anim'), 300);
+            }
+        }
+
+        function guardarTasaPersonalizadaDesdeModal() {
+            vibrar(20);
+            const input = document.getElementById('modalCustomRateInput');
+            const valor = parseFloat(input.value);
+            if (!valor || isNaN(valor) || valor <= 0) {
+                mostrarToast('⚠️ Ingresa una tasa válida mayor a 0', 'warning');
+                return;
+            }
+            ratesCache.custom.valor = valor;
+            ratesCache.custom.fecha = 'Personalizada: ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            guardarTasasEnStorage();
+
+            fuenteActual = 'custom';
+            document.querySelectorAll('.source-pill').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('btnSrcCustom').classList.add('active');
+
+            adaptarEtiquetasMoneda('custom');
+            aplicarTasaEnPantalla(true);
+            cerrarModalTasaPersonalizada();
+            mostrarToast(`✏️ Tasa personalizada fijada en ${formatearMoneda(valor)} Bs`, 'success');
+        }
+
         function abrirModalAyuda() {
             vibrar(15);
             document.getElementById('helpModal').classList.add('open');
@@ -2172,9 +2476,35 @@
             document.getElementById('authorModal').classList.remove('open');
         }
 
+        function abrirModalDonacion() {
+            vibrar(15);
+            cerrarModalAutor();
+            document.getElementById('donationModal').classList.add('open');
+        }
+
+        function cerrarModalDonacion() {
+            document.getElementById('donationModal').classList.remove('open');
+        }
+
+        function copiarTexto(texto, etiqueta = 'Dato') {
+            vibrar(20);
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(texto).then(() => {
+                    mostrarToast(`📋 ${etiqueta} copiado con éxito`, 'success');
+                }).catch(() => {
+                    copiarFallback(texto);
+                    mostrarToast(`📋 ${etiqueta} copiado`, 'success');
+                });
+            } else {
+                copiarFallback(texto);
+                mostrarToast(`📋 ${etiqueta} copiado`, 'success');
+            }
+        }
+
         function abrirModalPrivacidad() {
             vibrar(15);
             cerrarModalAutor();
+            cerrarModalDonacion();
             document.getElementById('privacyModal').classList.add('open');
         }
 
@@ -2330,8 +2660,92 @@
             }
         }
 
+        // ==========================================
+        // 10. MÓDULO DE PUBLICIDAD CONTROLADA (GOOGLE ADMOB)
+        // ==========================================
+        const IS_DEV_ADS = true; // Mantener true en pruebas. Cambiar a false únicamente para el build de producción final
+        const ENABLE_INTERSTITIALS = false; // Desactivado para v1.0.0 inicial: priorizar validación de Banner y no interferir con resultados
+
+        const TEST_BANNER_ID = 'ca-app-pub-3940256099942544/6300978111';
+        const TEST_INTERSTITIAL_ID = 'ca-app-pub-3940256099942544/1033173712';
+        const REAL_BANNER_ID = 'ca-app-pub-1625684634873221/9605931154'; // Banner Inferior Principal Real
+        const REAL_INTERSTITIAL_ID = 'ca-app-pub-1625684634873221/3038980815'; // Intersticial Fin de Calculo Real
+
+        const INTERSTITIAL_COOLDOWN_MS = 5 * 60 * 1000; // Máximo 1 anuncio intersticial cada 5 minutos
+        let admobInicializado = false;
+
+        async function inicializarAdMob() {
+            // Solo se ejecuta dentro de la app Android empaquetada con Capacitor
+            if (!window.Capacitor?.isNativePlatform?.() || !window.Capacitor?.Plugins?.AdMob) {
+                return;
+            }
+
+            try {
+                const { AdMob } = window.Capacitor.Plugins;
+                await AdMob.initialize({
+                    initializeForTesting: IS_DEV_ADS
+                });
+                admobInicializado = true;
+
+                // Mostrar Banner Inferior Adaptativo
+                const bannerId = IS_DEV_ADS ? TEST_BANNER_ID : REAL_BANNER_ID;
+                await AdMob.showBanner({
+                    adId: bannerId,
+                    adSize: 'ADAPTIVE_BANNER',
+                    position: 'BOTTOM_CENTER',
+                    margin: 0
+                });
+
+                if (ENABLE_INTERSTITIALS) {
+                    precargarIntersticial();
+                }
+            } catch (err) {
+                console.warn('AdMob en espera o no disponible:', err);
+            }
+        }
+
+        async function precargarIntersticial() {
+            if (!ENABLE_INTERSTITIALS || !admobInicializado || !window.Capacitor?.Plugins?.AdMob) return;
+            try {
+                const { AdMob } = window.Capacitor.Plugins;
+                const interstitialId = IS_DEV_ADS ? TEST_INTERSTITIAL_ID : REAL_INTERSTITIAL_ID;
+                await AdMob.prepareInterstitial({
+                    adId: interstitialId
+                });
+            } catch (e) {}
+        }
+
+        function puedeMostrarIntersticial() {
+            if (!ENABLE_INTERSTITIALS) return false;
+            try {
+                const ultimo = Number(localStorage.getItem('calculave_ad_interstitial_ts') || 0);
+                return (Date.now() - ultimo) >= INTERSTITIAL_COOLDOWN_MS;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        async function mostrarIntersticialSiCorresponde() {
+            if (!ENABLE_INTERSTITIALS || !admobInicializado || !window.Capacitor?.isNativePlatform?.()) return;
+            if (!puedeMostrarIntersticial()) return;
+
+            try {
+                const { AdMob } = window.Capacitor.Plugins;
+                await AdMob.showInterstitial();
+                try {
+                    localStorage.setItem('calculave_ad_interstitial_ts', String(Date.now()));
+                } catch (e) {}
+                // Precargar el siguiente anuncio
+                precargarIntersticial();
+            } catch (error) {
+                console.warn('No se pudo mostrar el intersticial:', error);
+            }
+        }
+
         // Inicialización al cargar la página
         window.addEventListener('DOMContentLoaded', () => {
+            // Inicializar AdMob si estamos en entorno nativo Android
+            inicializarAdMob();
             // Sincronizar iconos del tema
             const temaActual = document.documentElement.getAttribute('data-theme') || 'dark';
             aplicarTema(temaActual);
@@ -2366,7 +2780,11 @@
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
                         e.target.blur();
-                        guardarYCalcular();
+                        if (e.target.id === 'modalCustomRateInput') {
+                            guardarTasaPersonalizadaDesdeModal();
+                        } else {
+                            guardarYCalcular();
+                        }
                     }
                 });
             });
