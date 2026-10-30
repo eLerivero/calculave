@@ -28,7 +28,11 @@
 -keep public class * extends com.getcapacitor.Plugin
 -keep public class com.getcapacitor.** { *; }
 
-# 2. Eliminar llamadas a Logcat en compilación de Producción
+# 2. Preservar Google Mobile Ads (AdMob)
+-keep public class com.google.android.gms.ads.** { *; }
+-keep public class com.getcapacitor.community.admob.** { *; }
+
+# 3. Eliminar llamadas a Logcat en compilación de Producción
 -assumenosideeffects class android.util.Log {
     public static boolean isLoggable(java.lang.String, int);
     public static int v(...);

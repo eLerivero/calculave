@@ -862,6 +862,7 @@
         .footer {
             margin-top: 18px;
             padding-top: 14px;
+            padding-bottom: 75px; /* Espacio de seguridad inferior para no solapar con el banner de AdMob */
             border-top: 1px solid var(--border);
             text-align: center;
             display: flex;
@@ -2663,7 +2664,7 @@
         // ==========================================
         // 10. MÓDULO DE PUBLICIDAD CONTROLADA (GOOGLE ADMOB)
         // ==========================================
-        const IS_DEV_ADS = true; // Mantener true en pruebas. Cambiar a false únicamente para el build de producción final
+        const IS_DEV_ADS = false; // Producción oficial para Google Play Store (anuncios reales AdMob)
         const ENABLE_INTERSTITIALS = false; // Desactivado para v1.0.0 inicial: priorizar validación de Banner y no interferir con resultados
 
         const TEST_BANNER_ID = 'ca-app-pub-3940256099942544/6300978111';

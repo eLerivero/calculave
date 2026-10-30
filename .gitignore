@@ -3,6 +3,7 @@ node_modules/
 
 # Entorno y Configuración Local
 .env
+.env.*
 .env.local
 .DS_Store
 Thumbs.db
