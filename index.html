@@ -57,6 +57,7 @@
 
     <style>
         :root {
+            --admob-banner-space: 75px;
             /* Modo Oscuro: Sereno, equilibrado y descansado */
             --primary: #10b981;
             --primary-dark: #059669;
@@ -862,7 +863,7 @@
         .footer {
             margin-top: 18px;
             padding-top: 14px;
-            padding-bottom: 75px; /* Espacio de seguridad inferior para no solapar con el banner de AdMob */
+            padding-bottom: var(--admob-banner-space, 75px); /* Espacio dinámico de seguridad para el banner de AdMob */
             border-top: 1px solid var(--border);
             text-align: center;
             display: flex;
@@ -1599,6 +1600,14 @@
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                     </svg>
                     Ver Política de Privacidad Completa
+                </button>
+
+                <button type="button" id="btnPrivacyOptions" onclick="abrirOpcionesPrivacidadAdMob()" style="display: none; width: 100%; margin-top: 8px; background: rgba(16, 185, 129, 0.08); color: var(--primary-light); border: 1px solid rgba(16, 185, 129, 0.25); padding: 12px; border-radius: 12px; font-weight: 600; font-size: 13px; cursor: pointer; align-items: center; justify-content: center; gap: 8px; transition: var(--transition);">
+                    <svg class="svg-icon" style="width: 16px; height: 16px;" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    Gestionar Opciones de Consentimiento (UMP)
                 </button>
             </div>
         </div>
@@ -2674,6 +2683,18 @@
 
         const INTERSTITIAL_COOLDOWN_MS = 5 * 60 * 1000; // Máximo 1 anuncio intersticial cada 5 minutos
         let admobInicializado = false;
+        let admobSolicitandoOActivo = false;
+
+        function actualizarVisibilidadOpcionesPrivacidad(requirementStatus) {
+            const btn = document.getElementById('btnPrivacyOptions');
+            if (!btn) return;
+            // Conforme a la API UMP de Google: si es REQUIRED se exhibe el punto de entrada; de lo contrario se oculta
+            if (requirementStatus === 'REQUIRED') {
+                btn.style.display = 'flex';
+            } else {
+                btn.style.display = 'none';
+            }
+        }
 
         async function inicializarAdMob() {
             // Solo se ejecuta dentro de la app Android empaquetada con Capacitor
@@ -2681,8 +2702,77 @@
                 return;
             }
 
+            // Evitar solicitudes concurrentes o duplicadas de anuncios
+            if (admobSolicitandoOActivo) {
+                return;
+            }
+            admobSolicitandoOActivo = true;
+
             try {
                 const { AdMob } = window.Capacitor.Plugins;
+
+                // Registrar listeners dinámicos de tamaño una sola vez
+                if (!window._admobListenersRegistrados) {
+                    AdMob.addListener('bannerAdSizeChanged', (info) => {
+                        const h = (info && typeof info.height === 'number') ? info.height : 0;
+                        if (h > 0) {
+                            document.documentElement.style.setProperty('--admob-banner-space', `${h + 14}px`);
+                        } else {
+                            document.documentElement.style.setProperty('--admob-banner-space', '20px');
+                        }
+                    });
+
+                    AdMob.addListener('bannerAdFailedToLoad', () => {
+                        document.documentElement.style.setProperty('--admob-banner-space', '20px');
+                    });
+                    window._admobListenersRegistrados = true;
+                }
+
+                // 1. Consultar estado UMP de consentimiento inicial
+                let consentInfo = null;
+                try {
+                    consentInfo = await AdMob.requestConsentInfo();
+                } catch (reqErr) {
+                    console.warn('Consulta inicial de UMP falló o sin red:', reqErr);
+                }
+
+                // Actualizar visibilidad del botón de opciones según el estado devuelto
+                if (consentInfo?.privacyOptionsRequirementStatus) {
+                    actualizarVisibilidadOpcionesPrivacidad(consentInfo.privacyOptionsRequirementStatus);
+                }
+
+                // 2. Si se requiere consentimiento y el formulario de AdMob está disponible, mostrarlo
+                if (consentInfo?.isConsentFormAvailable && consentInfo?.status === 'REQUIRED') {
+                    try {
+                        await AdMob.showConsentForm();
+                    } catch (formErr) {
+                        console.warn('Error o rechazo al mostrar formulario UMP:', formErr);
+                    }
+                }
+
+                // 3. Consultar NUEVAMENTE el estado actualizado tras la interacción (NUNCA reutilizar estado previo)
+                let finalConsent = null;
+                try {
+                    finalConsent = await AdMob.requestConsentInfo();
+                } catch (reErr) {
+                    finalConsent = consentInfo;
+                }
+
+                if (finalConsent?.privacyOptionsRequirementStatus) {
+                    actualizarVisibilidadOpcionesPrivacidad(finalConsent.privacyOptionsRequirementStatus);
+                }
+
+                // 4. Evaluar canRequestAds sobre el estado definitivo y fresco
+                const puedeSolicitarAnuncios = finalConsent ? Boolean(finalConsent.canRequestAds) : false;
+
+                if (!puedeSolicitarAnuncios) {
+                    console.info('UMP: Consentimiento no concedido o restringido. No se solicitan anuncios.');
+                    document.documentElement.style.setProperty('--admob-banner-space', '20px');
+                    admobSolicitandoOActivo = false;
+                    return;
+                }
+
+                // 5. Solo solicitar anuncios si canRequestAds es positivo
                 await AdMob.initialize({
                     initializeForTesting: IS_DEV_ADS
                 });
@@ -2702,6 +2792,37 @@
                 }
             } catch (err) {
                 console.warn('AdMob en espera o no disponible:', err);
+                document.documentElement.style.setProperty('--admob-banner-space', '20px');
+            } finally {
+                admobSolicitandoOActivo = false;
+            }
+        }
+
+        async function abrirOpcionesPrivacidadAdMob() {
+            if (!window.Capacitor?.isNativePlatform?.() || !window.Capacitor?.Plugins?.AdMob) {
+                mostrarToast('ℹ️ Opciones de consentimiento disponibles en la app móvil instalada.', 'info');
+                return;
+            }
+            try {
+                const { AdMob } = window.Capacitor.Plugins;
+                await AdMob.showPrivacyOptionsForm();
+
+                // Tras salir del formulario de opciones, reevaluar el consentimiento en tiempo real
+                const postInfo = await AdMob.requestConsentInfo().catch(() => null);
+                if (postInfo) {
+                    actualizarVisibilidadOpcionesPrivacidad(postInfo.privacyOptionsRequirementStatus);
+
+                    if (!postInfo.canRequestAds && admobInicializado) {
+                        await AdMob.hideBanner().catch(() => {});
+                        document.documentElement.style.setProperty('--admob-banner-space', '20px');
+                        admobInicializado = false;
+                    } else if (postInfo.canRequestAds && !admobInicializado) {
+                        inicializarAdMob();
+                    }
+                }
+            } catch (err) {
+                console.warn('Opciones de privacidad UMP no disponibles o no requeridas:', err);
+                mostrarToast('ℹ️ Las opciones de privacidad no son requeridas para tu región actual.', 'info');
             }
         }
 

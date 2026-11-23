@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application
         android:allowBackup="false"
@@ -39,9 +40,18 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-1625684634873221~5094298514" />
+
+        <!-- Deshabilitar SystemForegroundService de WorkManager ya que CalculaVE no ejecuta workers en primer plano -->
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            tools:node="remove" />
     </application>
 
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Suprimir permiso de servicio en primer plano transitivo de WorkManager (AdMob).
+         CalculaVE no ejecuta tareas de larga duración en primer plano ni servicios continuos,
+         evitando el rechazo y formulario de justificación de Google Play en API 34+. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" tools:node="remove" />
 </manifest>

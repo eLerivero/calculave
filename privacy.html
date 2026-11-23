@@ -48,7 +48,7 @@
             transition: background 0.3s ease, color 0.3s ease;
         }
         .container {
-            max-width: 720px;
+            max-width: 760px;
             width: 100%;
             background: var(--card-bg);
             backdrop-filter: blur(20px);
@@ -76,7 +76,8 @@
         }
         h1 { font-size: 26px; margin-bottom: 8px; color: var(--text-primary); }
         .meta { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
-        h2 { font-size: 18px; margin: 24px 0 10px; color: var(--primary-light); }
+        h2 { font-size: 18px; margin: 26px 0 10px; color: var(--primary-light); }
+        h3 { font-size: 15px; margin: 16px 0 6px; color: var(--text-primary); }
         p { margin-bottom: 14px; font-size: 14px; color: var(--text-secondary); }
         ul { margin: 10px 0 16px 20px; color: var(--text-secondary); font-size: 14px; }
         li { margin-bottom: 6px; }
@@ -89,6 +90,28 @@
             font-size: 13.5px;
             color: var(--box-text);
         }
+        .table-responsive {
+            overflow-x: auto;
+            margin: 14px 0 18px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+        }
+        th, td {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+        }
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        td {
+            color: var(--text-secondary);
+        }
         .footer {
             margin-top: 32px;
             padding-top: 20px;
@@ -99,6 +122,13 @@
         }
         a { color: var(--primary-light); text-decoration: none; font-weight: 600; }
         a:hover { text-decoration: underline; }
+        code {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12.5px;
+            color: var(--primary-light);
+        }
     </style>
     <script>
         (function() {
@@ -118,74 +148,178 @@
             <h1>CalculaVE · Calculadora Multimoneda</h1>
             <div class="meta">
                 <b>Desarrollador y Titular:</b> Luis David Rivero Carmona (@eLerivero)<br>
-                <b>Perfiles Oficiales:</b> <a href="https://github.com/eLerivero" target="_blank" rel="noopener noreferrer">GitHub (@eLerivero)</a> · <a href="https://www.linkedin.com/in/luis-rivero-b88603241/" target="_blank" rel="noopener noreferrer">LinkedIn</a><br>
-                <b>Última actualización:</b> Octubre de 2026 · Versión 1.0.0
+                <b>Correo Electrónico de Contacto:</b> <a href="mailto:elerivero07@gmail.com">elerivero07@gmail.com</a><br>
+                <b>Identificador de Aplicación:</b> <code>com.elerivero.calculave</code><br>
+                <b>Repositorio Oficial:</b> <a href="https://github.com/eLerivero/calculave" target="_blank" rel="noopener noreferrer">github.com/eLerivero/calculave</a><br>
+                <b>Perfiles:</b> <a href="https://github.com/eLerivero" target="_blank" rel="noopener noreferrer">GitHub (@eLerivero)</a> · <a href="https://www.linkedin.com/in/luis-rivero-b88603241/" target="_blank" rel="noopener noreferrer">LinkedIn</a><br>
+                <b>Última actualización:</b> 23 de noviembre de 2026 · Versión 1.0.0
             </div>
         </div>
 
         <div class="box">
-            🛡️ <b>Compromiso de Privacidad Total:</b> <strong>CalculaVE</strong> respeta profundamente la privacidad de sus usuarios. Esta aplicación opera bajo la arquitectura <em>Zero-Telemetry / Offline-First</em>: <strong>no recopilamos, no almacenamos, no vendemos ni compartimos ningún dato personal identificable (PII)</strong>.
+            🛡️ <b>Compromiso de Privacidad y Transparencia:</b> <strong>CalculaVE</strong> respeta profundamente tu privacidad. El desarrollador titular opera bajo la arquitectura <em>Zero-Telemetry / Offline-First</em>: <strong>no opera servidores propios ni bases de datos para recopilar o almacenar tus cálculos, importes o historial numérico</strong>. Todo tu uso de cálculo permanece exclusivamente en tu dispositivo móvil. No obstante, para actualizar las tasas de cambio y monetizar con anuncios, la app se comunica con servicios de terceros (detallados en las secciones 3 y 5) que procesan datos técnicos conforme a sus propias políticas.
         </div>
 
         <h2>1. Información que NO recopilamos</h2>
         <p>Al utilizar CalculaVE:</p>
         <ul>
-            <li><strong>No solicitamos registro ni cuentas de usuario:</strong> No pedimos nombres, correos electrónicos, números telefónicos ni contraseñas.</li>
-            <li><strong>No accedemos a información del dispositivo:</strong> No accedemos a contactos, mensajes, llamadas, cámara, micrófono, galería ni ubicación GPS.</li>
-            <li><strong>No vendemos ni comercializamos tus datos:</strong> CalculaVE no vende tus datos a corredores de información ni recopila datos bancarios o financieros personales.</li>
+            <li><strong>Sin cuentas ni registros de usuario:</strong> No solicitamos nombres, correos electrónicos, números telefónicos, contraseñas ni perfiles sociales.</li>
+            <li><strong>Sin acceso a hardware ni datos sensibles del dispositivo:</strong> No accedemos a contactos, mensajes, llamadas, cámara, micrófono, almacenamiento multimedia privado ni ubicación GPS precisa.</li>
+            <li><strong>Sin intermediarios de venta de datos:</strong> CalculaVE no comercializa datos de usuario con brokers de datos ni recopila credenciales bancarias o datos financieros personales.</li>
         </ul>
 
         <h2>2. Almacenamiento Local en el Dispositivo (LocalStorage)</h2>
         <p>
-            Cualquier cálculo realizado, historial numérico o configuración de tasas personalizadas se almacena <strong>estrictamente en la memoria local de tu dispositivo móvil</strong> (mediante LocalStorage). Esta información nunca es transmitida a servidores externos ni compartida con terceros. Tienes el control total para borrar este historial en cualquier momento desde el botón de la papelera dentro de la aplicación o al desinstalar la app.
+            Cualquier cálculo realizado, historial numérico o configuración de tasas personalizadas se almacena <strong>estrictamente en la memoria local de tu dispositivo móvil</strong> mediante el estándar <code>LocalStorage</code> del navegador o WebView.
+        </p>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Clave Local</th>
+                        <th>Finalidad Técnica</th>
+                        <th>Retención y Alcance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>calculave_rates_v1</code></td>
+                        <td>Guarda en caché los valores numéricos de las tasas (BCV, Paralelo, Euro, USDT) y la fecha de última actualización.</td>
+                        <td>Local en el dispositivo. Persiste hasta nueva sincronización o borrado por el usuario.</td>
+                    </tr>
+                    <tr>
+                        <td><code>calculave_history</code></td>
+                        <td>Almacena los últimos cálculos matemáticos y conversiones realizadas por el usuario.</td>
+                        <td>Local en el dispositivo. Puede eliminarse en cualquier momento con el botón de papelera.</td>
+                    </tr>
+                    <tr>
+                        <td><code>calculave_theme</code></td>
+                        <td>Almacena la preferencia visual de interfaz (tema oscuro o tema claro).</td>
+                        <td>Local en el dispositivo. Persiste hasta ser cambiado por el usuario.</td>
+                    </tr>
+                    <tr>
+                        <td><code>calculave_tip_pct</code></td>
+                        <td>Guarda el porcentaje de propina seleccionado en la calculadora de propinas.</td>
+                        <td>Local en el dispositivo.</td>
+                    </tr>
+                    <tr>
+                        <td><code>calculave_ad_interstitial_ts</code></td>
+                        <td>Control de frecuencia para limitar la aparición de anuncios intersticiales.</td>
+                        <td>Local en el dispositivo.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p>
+            Esta información <strong>nunca es transmitida a servidores externos ni compartida con terceros</strong>. El usuario tiene el control total para borrar este historial en cualquier momento desde el botón de la papelera dentro de la aplicación o limpiando los datos de la app en los ajustes de Android.
         </p>
 
-        <h2>3. Conexión de Red y APIs Externas de Cotización</h2>
+        <h2>3. Servicios Externos y Consulta de Tasas de Cambio</h2>
         <p>
-            CalculaVE incluye la función de consultar tasas públicas de referencia venezolanas (Banco Central de Venezuela - BCV, Euro Oficial, Paralelo y Binance P2P USDT).
+            CalculaVE permite consultar tasas de referencia públicas de Venezuela (Banco Central de Venezuela - BCV, Euro Oficial, Paralelo y Binance P2P USDT). A continuación se documenta el inventario completo de servicios externos consultados:
         </p>
-        <ul>
-            <li>La app realiza solicitudes HTTPS públicas a endpoints abiertos (como DolarAPI y proveedores de tasas públicas) exclusivamente para consultar el valor numérico de la cotización cambiaria.</li>
-            <li>Estas solicitudes son anónimas y no contienen ningún dato de usuario ni parámetros de seguimiento.</li>
-            <li>Si no cuentas con conexión a internet, la aplicación continuará funcionando al 100% de manera offline con la última tasa guardada o con la tasa manual que definas.</li>
-        </ul>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Proveedor / Endpoint</th>
+                        <th>Finalidad</th>
+                        <th>Datos Enviados</th>
+                        <th>Datos Recibidos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ve.dolarapi.com</strong><br><code>/v1/dolares</code><br><code>/v1/euros/oficial</code></td>
+                        <td>Proveedor principal de cotización oficial BCV (USD y EUR) y cotización de mercado paralelo.</td>
+                        <td>Petición HTTP GET anónima mediante HTTPS. Incluye la dirección IP pública técnica del dispositivo y cabeceras de red estándares. No envía cookies ni identificadores.</td>
+                        <td>Documento JSON con las cotizaciones públicas de cambio y fecha de actualización.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>open.er-api.com</strong><br><code>/v6/latest/USD</code></td>
+                        <td>Proveedor de contingencia (respaldo). Solo se consulta si <code>ve.dolarapi.com</code> no responde o presenta fallo de conexión.</td>
+                        <td>Petición HTTP GET anónima mediante HTTPS (dirección IP técnica y cabeceras estándar).</td>
+                        <td>Objeto JSON con cotizaciones de divisas internacionales en formato VES.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>criptoya.com</strong><br><code>/api/usdt/ves</code></td>
+                        <td>Cotización de referencia para el criptoactivo estable USDT (Binance P2P en Bolívares).</td>
+                        <td>Petición HTTP GET anónima mediante HTTPS (dirección IP técnica y cabeceras estándar).</td>
+                        <td>Objeto JSON con precios de compra y venta de referencia en el mercado P2P.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="box">
+            📡 <b>Comportamiento Offline vs Tasas Actualizadas:</b> La <strong>calculadora es 100% funcional sin conexión a internet</strong> (realiza cálculos de porcentajes, IVA, IGTF, propinas y conversiones con la última tasa guardada o con una tasa manual). Sin embargo, las <strong>tasas de cambio no se actualizan en tiempo real sin internet</strong>; para refrescar el precio del día se requiere conectividad de red activa.
+        </div>
 
         <h2>4. Permisos de la Aplicación en Android</h2>
         <p>
-            CalculaVE solicita únicamente el permiso de red básica (<code>android.permission.INTERNET</code> y <code>ACCESS_NETWORK_STATE</code>) estrictamente para verificar la conectividad y actualizar las tasas públicas. No solicita permisos sensibles ni peligrosos.
-        </p>
-
-        <h2>5. Publicidad Móvil y Servicios de Terceros (Google AdMob)</h2>
-        <p>
-            CalculaVE integra los servicios publicitarios de <strong>Google AdMob</strong> (Google LLC) para apoyar el desarrollo y mantenimiento continuo de la aplicación de forma gratuita:
+            El paquete compilado de CalculaVE solicita estrictamente los permisos necesarios para la conectividad y la biblioteca publicitaria de AdMob:
         </p>
         <ul>
-            <li><strong>Identificadores publicitarios técnicos:</strong> Google AdMob puede procesar identificadores anónimos del dispositivo (como el Google Advertising ID o GAID), datos de rendimiento y diagnósticos de red para servir anuncios, limitar la frecuencia de impresión y prevenir fraudes.</li>
-            <li><strong>Control del usuario:</strong> Puedes consultar, restablecer o inhabilitar la personalización de anuncios en cualquier momento desde los ajustes de tu teléfono Android en <em>Ajustes &gt; Google &gt; Anuncios</em>.</li>
-            <li><strong>Políticas de Google:</strong> Para conocer en detalle cómo Google procesa los datos en aplicaciones móviles, visita la <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">Política de Publicidad y Privacidad de Google</a>.</li>
+            <li><code>android.permission.INTERNET</code>: Permite realizar las peticiones HTTPS a los proveedores de tasas y cargar creatividades publicitarias de Google AdMob.</li>
+            <li><code>android.permission.ACCESS_NETWORK_STATE</code>: Permite detectar si el teléfono está en línea o en modo avión para activar el modo de contingencia offline sin esperas innecesarias.</li>
+            <li><code>com.google.android.gms.permission.AD_ID</code> y permisos de Privacy Sandbox (<code>ACCESS_ADSERVICES_*</code>): Gestionados por el SDK de Google Mobile Ads para la atribución y entrega de anuncios según las políticas de Android 13+.</li>
+            <li><code>android.permission.WAKE_LOCK</code>: Gestionado por Google Play Services para asegurar la finalización técnica de mediciones.</li>
+        </ul>
+        <div class="box">
+            🚫 <b>Declaración sobre Servicios en Primer Plano:</b> CalculaVE <strong>NO solicita ni utiliza</strong> el permiso <code>android.permission.FOREGROUND_SERVICE</code> ni ejecuta servicios continuos en primer plano. Dicho permiso ha sido suprimido de la compilación para garantizar el máximo respeto al consumo de batería y la privacidad del usuario.
+        </div>
+
+        <h2>5. Publicidad Móvil y Formulario de Seguridad de los Datos (Google AdMob)</h2>
+        <p>
+            CalculaVE integra los servicios publicitarios de <strong>Google AdMob</strong> (Google LLC) para financiar el mantenimiento gratuito de la herramienta. De acuerdo con los requisitos del formulario de <em>Seguridad de los datos</em> de Google Play Console, el SDK de Google Mobile Ads recopila y procesa las siguientes categorías de datos:
+        </p>
+        <ul>
+            <li><strong>Ubicación aproximada (Approximate Location):</strong> Derivada de la dirección IP técnica de conexión. Google la utiliza para servir publicidad relevante por país o región y prevenir tráfico fraudulento. CalculaVE no accede a ubicación GPS precisa.</li>
+            <li><strong>Actividad en la app (App Activity):</strong> Registros de interacción con los anuncios (impresiones de banners, aperturas, clics e interacciones) con fines de análisis publicitario y prevención de abusos.</li>
+            <li><strong>Información y rendimiento de la app (App info and performance):</strong> Registros de diagnóstico técnico, latencia de red y reportes de fallos del SDK para garantizar la estabilidad del servicio publicitario.</li>
+            <li><strong>Identificadores de dispositivo (Device or other IDs):</strong> Identificador de Publicidad de Google (GAID / AAID) y App Set ID para control de frecuencia de anuncios y prevención de fraude.</li>
+        </ul>
+        <p>
+            Todos los datos procesados por Google AdMob se transmiten cifrados mediante el protocolo HTTPS. Para más información, consulta la <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">Política de Publicidad y Privacidad de Google</a>.
+        </p>
+
+        <h3>Conducta del Código y Consentimiento Publicitario (canRequestAds)</h3>
+        <p>
+            CalculaVE consulta el estado de consentimiento a través de la biblioteca oficial User Messaging Platform (UMP) antes de emitir solicitudes publicitarias. El parámetro técnico <code>canRequestAds</code> determina si el SDK de Google Mobile Ads tiene autorización reglamentaria para solicitar creatividades:
+        </p>
+        <ul>
+            <li><strong>canRequestAds no equivale a aceptación de publicidad personalizada:</strong> La autorización para solicitar anuncios (<code>canRequestAds = true</code>) permite a AdMob comunicarse con sus servidores, pero Google modula automáticamente si sirve <em>anuncios personalizados</em>, <em>anuncios no personalizados (NPA)</em> o <em>anuncios limitados (LTD)</em> dependiendo de las finalidades y preferencias específicas que el usuario haya seleccionado en el formulario de consentimiento.</li>
+            <li><strong>Bloqueo estricto si no hay consentimiento:</strong> Si las políticas de UMP determinan que no se pueden solicitar anuncios (<code>canRequestAds = false</code>), el código de CalculaVE bloquea totalmente la llamada a AdMob y no emite ninguna petición publicitaria al servidor.</li>
         </ul>
 
-        <h2>6. Cumplimiento con Menores y Familias (Google Play Families Policy)</h2>
+        <h2>6. Controles del Usuario, Consentimiento y Ejercicio de Derechos</h2>
+        <p>El usuario dispone de mecanismos directos y autónomos para gestionar su privacidad:</p>
+        <ul>
+            <li><strong>Opciones de Privacidad y Consentimiento Publicitario (UMP):</strong> En cumplimiento con las normativas europeas (RGPD) y directrices de Google, la app evalúa el parámetro técnico <code>privacyOptionsRequirementStatus</code>:
+                <ul>
+                    <li><strong>En regiones donde UMP lo requiere (<code>REQUIRED</code>),</strong> como el Espacio Económico Europeo (EEE), Reino Unido y Suiza, la app muestra de forma visible el botón <strong>«Gestionar Opciones de Consentimiento (UMP)»</strong> dentro de la sección <em>Sobre el Desarrollador</em>, permitiendo al usuario revocar, restringir o modificar sus elecciones en cualquier momento.</li>
+                    <li><strong>En regiones o condiciones donde UMP determina que no es requerido (<code>NOT_REQUIRED</code>),</strong> dicho botón permanece oculto en la interfaz por diseño del SDK de Google.</li>
+                </ul>
+            </li>
+            <li><strong>Diferencia con el Identificador de Publicidad (GAID) en Android:</strong> El usuario puede restablecer o eliminar su ID publicitario en cualquier momento desde <em>Ajustes &gt; Google &gt; Anuncios &gt; Restablecer / Eliminar ID de publicidad</em>. <em>Nota regulatoria:</em> Restablecer o borrar el GAID en el sistema operativo únicamente desvincula el historial de atribución previo a nivel de dispositivo, pero <strong>no constituye un sustituto de la revocación del consentimiento publicitario</strong>, la cual debe gestionarse mediante el mecanismo de opciones de privacidad de la app cuando sea aplicable.</li>
+            <li><strong>Borrar el historial de cálculos y datos locales:</strong> Puedes pulsar el icono de la papelera en la barra superior de CalculaVE, o borrar los datos locales desde <em>Ajustes &gt; Aplicaciones &gt; CalculaVE &gt; Almacenamiento &gt; Borrar datos</em>.</li>
+            <li><strong>Derechos de acceso, rectificación y supresión (ARCO / GDPR):</strong> Debido a que el desarrollador no opera servidores propios para almacenar expedientes de usuarios ni historiales de cálculo, no existe una base de datos vinculada a tu persona en poder del desarrollador. Para cualquier consulta adicional, puedes escribir a <a href="mailto:elerivero07@gmail.com">elerivero07@gmail.com</a>.</li>
+        </ul>
+
+        <h2>7. Cumplimiento de Políticas de Familias y Menores</h2>
         <p>
-            CalculaVE es una herramienta de utilidad matemática apta para todas las edades. Al no solicitar datos personales y servir únicamente publicidad categorizada para público general, cumple íntegramente con las directrices de seguridad familiar de Google Play y la normativa COPPA / GDPR-K.
+            CalculaVE es una herramienta de utilidad matemática apta para público general de todas las edades. No recopila datos personales de menores de edad y sirve únicamente anuncios configurados para audiencias generales, cumpliendo íntegramente con la normativa COPPA y la política de Familias de Google Play.
         </p>
 
-        <h2>7. Cambios en esta Política</h2>
+        <h2>8. Contacto Oficial con el Desarrollador</h2>
         <p>
-            Cualquier actualización a esta política se reflejará en esta página y en las notas de actualización de la versión correspondiente en la Google Play Store.
-        </p>
-
-        <h2>8. Contacto con el Desarrollador</h2>
-        <p>
-            Si tienes dudas, sugerencias o comentarios acerca de esta política de privacidad o sobre el funcionamiento de CalculaVE, puedes comunicarte directamente con el desarrollador:
+            Si tienes preguntas sobre esta política o deseas realizar consultas técnicas:
         </p>
         <ul>
-            <li><b>Desarrollador:</b> Luis David Rivero Carmona (@eLerivero)</li>
-            <li><b>GitHub:</b> <a href="https://github.com/eLerivero" target="_blank" rel="noopener noreferrer">https://github.com/eLerivero</a></li>
-            <li><b>LinkedIn:</b> <a href="https://www.linkedin.com/in/luis-rivero-b88603241/" target="_blank" rel="noopener noreferrer">https://www.linkedin.com/in/luis-rivero-b88603241/</a></li>
-            <li><b>Aplicación:</b> CalculaVE (com.elerivero.calculave)</li>
-            <li><b>Ubicación:</b> Venezuela 🇻🇪</li>
-            <li><b>Soporte:</b> Contacto a través de GitHub o la ficha de Google Play Store</li>
+            <li><b>Desarrollador y Titular:</b> Luis David Rivero Carmona</li>
+            <li><b>Correo Electrónico:</b> <a href="mailto:elerivero07@gmail.com">elerivero07@gmail.com</a></li>
+            <li><b>Perfil GitHub:</b> <a href="https://github.com/eLerivero" target="_blank" rel="noopener noreferrer">github.com/eLerivero</a></li>
+            <li><b>Repositorio del Proyecto:</b> <a href="https://github.com/eLerivero/calculave" target="_blank" rel="noopener noreferrer">github.com/eLerivero/calculave</a></li>
+            <li><b>País de Residencia:</b> Venezuela 🇻🇪</li>
         </ul>
 
         <div class="footer">
