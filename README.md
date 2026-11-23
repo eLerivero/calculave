@@ -6,9 +6,9 @@
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Luis%20Rivero-0A66C2?logo=linkedin)](https://www.linkedin.com/in/luis-rivero-b88603241/)
 [![Modo Oscuro & Claro](https://img.shields.io/badge/Temas-Oscuro%20%7C%20Claro-purple.svg)](#-soporte-de-modo-oscuro-y-modo-claro)
 [![Offline First](https://img.shields.io/badge/Arquitectura-100%25%20Offline-success.svg)](#-arquitectura-zero-cdn--offline-first)
-[![Capacitor Android](https://img.shields.io/badge/Android-APK%20Ready%20(Capacitor%206)-brightgreen.svg)](android/)
+[![Capacitor Android](https://img.shields.io/badge/Android-Release%20Ready%20(Capacitor%207%20%7C%20SDK%2036)-brightgreen.svg)](android/)
 
-**CalculaVE** es una aplicación financiera móvil y PWA diseñada específicamente para el ecosistema económico venezolano. Permite calcular porcentajes, descuentos, equivalencias cambiarias en vivo con tasas oficiales **BCV (Dólar y Euro)**, cotización **USDT (Binance P2P)** y **Dólar Paralelo**, cálculo de **IVA (16%)** e **IGTF (3%)**, funcionando **100% offline** y sin depender de servidores externos ni librerías CDN.
+**CalculaVE** es una aplicación de utilidades financieras y PWA diseñada para el ecosistema económico venezolano. Permite calcular porcentajes, descuentos, equivalencias cambiarias con tasas referenciales **BCV (Dólar y Euro)**, cotización **USDT (Binance P2P)** y **Dólar Paralelo**, cálculo de **IVA (16%)** e **IGTF (3%)**, operando bajo una arquitectura **offline-first** para cálculos matemáticos locales y sincronizando tasas del día mediante APIs públicas abiertas.
 
 ---
 
@@ -42,9 +42,9 @@
   - Descuentos con botones de selección rápida (5%, 10%, 15%, 20%, 25%, 30%, 50%).
   - Cálculo simultáneo en Dólares ($) y Bolívares (Bs).
   - Historial local de cálculos recientes con opción de limpieza.
-- 🛡️ **Zero-Telemetry & Máxima Privacidad:**
-  - No recopila cookies, identificadores de publicidad ni datos personales (*Zero-PII*).
-  - Todos los datos residen exclusivamente en la memoria local de tu dispositivo.
+- 🛡️ **Privacidad Local & Monetización Transparente:**
+  - Los cálculos numéricos, porcentajes e historial residen exclusivamente en la memoria local de tu dispositivo (*Zero-Backend* para datos numéricos).
+  - Integración de **Google AdMob** con soporte de la plataforma de consentimiento **Google UMP (RGPD)**, permitiendo a los usuarios gestionar sus preferencias de privacidad publicitaria.
 
 ---
 
@@ -67,32 +67,31 @@ Funciona de inmediato sin necesidad de tienda ni cables:
 
 ---
 
-### 📦 Opción 2: Compilar el APK para Android con Capacitor
+### 📦 Opción 2: Compilar para Android con Capacitor
 
-El proyecto cuenta con la suite completa de **Capacitor 6** configurada para Android:
+El proyecto cuenta con la suite de **Capacitor 7** configurada para Android (SDK 36):
 
 1. **Instalar dependencias:**
    ```bash
    npm install
    ```
 
-2. **Compilar los recursos web y sincronizar con Android:**
+2. **Compilar recursos web y sincronizar con Android:**
    ```bash
    npm run cap:sync
    ```
 
-3. **Abrir en Android Studio:**
+3. **Compilar AAB Release optimizado y firmado:**
+   ```bash
+   npm run build:release
+   ```
+   Genera el App Bundle para Google Play Store en:
+   `android/app/build/outputs/bundle/release/app-release.aab`
+
+4. **O abrir en Android Studio:**
    ```bash
    npm run cap:android
    ```
-   Dentro de Android Studio, haz clic en `Build > Build Bundle(s) / APK(s) > Build APK(s)`.
-
-4. **O compilar directamente por terminal con Gradle:**
-   ```bash
-   cd android && ./gradlew assembleDebug
-   ```
-   El binario instalable se generará en:
-   `android/app/build/outputs/apk/debug/app-debug.apk`
 
 ---
 
